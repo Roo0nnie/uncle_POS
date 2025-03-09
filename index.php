@@ -55,7 +55,7 @@ session_start();
         <form action="./php/login.php" method="post">
           <?php
             if (isset($_SESSION['error_message'])) {
-                echo "<p>" . $_SESSION['error_message'] . "</p>";
+                echo "<p class='text-danger text-center'>" . $_SESSION['error_message'] . "</p>";
                 unset($_SESSION['error_message']); 
             }
           ?>
