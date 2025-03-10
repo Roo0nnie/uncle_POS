@@ -10,34 +10,42 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         return $data;
     }
 
-    $admin_user = validate($_POST['username']);
-    $admin_pass = validate($_POST['password']);
+    $user = validate($_POST['username']);
+    $pass = validate($_POST['password']);
 
-    if (empty($admin_user)) {
+    if (empty($user)) {
         $_SESSION['error_message'] = "Username is required.";
         header("Location: ../index.php");
         exit();
-    } else if (empty($admin_pass)) {
+    } else if (empty($pass)) {
         $_SESSION['error_message'] = "Password is required.";
         header("Location: ../index.php");
         exit();
     } else {
     
-        $sql = "SELECT * FROM admin WHERE username = ? AND password = ?";
+        $sql = "SELECT * FROM user WHERE username = ? AND password = ?";
         $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "ss", $admin_user, $admin_pass);
+        mysqli_stmt_bind_param($stmt, "ss", $user, $pass);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         if (mysqli_num_rows($result) === 1) {
             $row = mysqli_fetch_assoc($result);
 
-            if ($row['username'] === $admin_user && $row['password'] === $admin_pass) {
+            if ($row['username'] === $user && $row['password'] === $pass) {
                 $_SESSION['username'] = $row['username'];
                 $_SESSION['name'] = $row['name'];
                 $_SESSION['last_name'] = $row['last_name'];
                 $_SESSION['id'] = $row['id'];
-                header("Location: ../dashboard.php");
+                $_SESSION['email'] = $row['email'];
+                $_SESSION['role'] = $row['role'];
+
+                if($_SESSION['role'] == 'admin') {
+                    header("Location: ../dashboard.php");
+                } else {
+                    header('Location: ../cashier/menu.php');
+                }
+               
                 exit();
             } else {
                 $_SESSION['error_message'] = "Incorrect username or password.";

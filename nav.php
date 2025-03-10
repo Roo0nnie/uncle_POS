@@ -31,14 +31,14 @@
                     />
                     </div>
                     <div class="u-text">
-                    <h4>Admin</h4>
-                    <p class="text-muted">sample@gmail.com</p>
+                    <h4><?php print $_SESSION['name'] ?> <?php print $_SESSION['last_name'] ?></h4>
+                    <p class="text-muted"><?php print $_SESSION['email']?></p>
                     </div>
                 </div>
                 </li>
                 <li>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="./index.php">Logout</a>
+                <a class="dropdown-item" href="./php/logout.php">Logout</a>
                 </li>
             </div>
             </ul>

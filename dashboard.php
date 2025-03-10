@@ -11,7 +11,7 @@ function handleDatabaseError($conn, $query) {
   die("A database error occurred. Please contact support.");
 }
 
-if (isset($_SESSION['id']) && isset($_SESSION['name']) && isset($_SESSION['last_name'])) {
+if (isset($_SESSION['id']) && isset($_SESSION['name']) && isset($_SESSION['last_name']) && isset($_SESSION['email'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
