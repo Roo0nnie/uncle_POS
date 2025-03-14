@@ -1,5 +1,5 @@
 <?php
-include './php/db_conn.php';
+include '../../php/db_conn.php';
 session_start();
 
 if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
@@ -16,12 +16,12 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
     />
     <link
       rel="icon"
-      href="assets/img/admin/favicon.ico"
+      href="../../assets/img/admin/favicon.ico"
       type="image/x-icon"
     />
 
     <!-- Fonts and icons -->
-    <script src="assets/js/plugin/webfont/webfont.min.js"></script>
+    <script src="../../assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
       WebFont.load({
         google: { families: ["Public Sans:300,400,500,600,700"] },
@@ -32,7 +32,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
             "Font Awesome 5 Brands",
             "simple-line-icons",
           ],
-          urls: ["assets/css/fonts.min.css"],
+          urls: ["../../assets/css/fonts.min.css"],
         },
         active: function () {
           sessionStorage.fonts = true;
@@ -40,13 +40,13 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
       });
     </script>
 
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="assets/css/plugins.min.css" />
-    <link rel="stylesheet" href="assets/css/admin.min.css" />
+   <!-- CSS Files -->
+   <link rel="stylesheet" href="../../assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../assets/css/plugins.min.css" />
+    <link rel="stylesheet" href="../../assets/css/admin.min.css" />
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="assets/css/demo.css" />
+    <link rel="stylesheet" href="../../assets/css/demo.css" />
   </head>
   <body>
     <div class="wrapper">
@@ -57,7 +57,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
           <div class="logo-header" data-background-color="dark">
             <a href="dashboard.php" class="logo">
               <img
-                src="assets/img/admin/logo_light.svg"
+                src="../../assets/img/admin/logo_light.svg"
                 alt="navbar brand"
                 class="navbar-brand"
                 height="20"
@@ -80,40 +80,28 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
             <ul class="nav nav-secondary">
-              <li class="nav-item">
-                <a href="dashboard.php">
-                  <i class="fas fa-home"></i>
-                  <p>Dashboard</p>
+            <li class="nav-item ">
+                <a href="../menu.php">
+                  <i class="fas fa-shopping-cart"></i>
+                  <p>Menu</p>
                 </a>
               </li>
-              <li class="nav-section">
+              <li class="nav-section ">
                 <span class="sidebar-mini-icon">
                   <i class="fa fa-ellipsis-h"></i>
                 </span>
                 <h4 class="text-section">Components</h4>
               </li>
-              <li class="nav-item">
-                <a href="product.php">
-                  <i class="fas fa-boxes"></i>
-                  <p>Product</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="category.php">
-                  <i class="fas fa-tags"></i>
-                  <p>Category</p>
-                </a>
-              </li>
               <li class="nav-item active">
-                <a href="./orders.php">
+                <a href="../order/orders.php">
                   <i class="fas fa-shopping-cart"></i>
                   <p>Orders</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a  href="./reports.php">
+                <a  href="../reports/reports.php">
                   <i class="fas fa-clipboard-list"></i>
-                  <p>Reports</p>
+                  <p>Reports & Analytics</p>
                 </a>
               </li>
             </ul>
@@ -129,7 +117,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
             <div class="logo-header" data-background-color="dark">
               <a href="dashboard.php" class="logo">
                 <img
-                  src="assets/img/admin/logo_light.svg"
+                  src="../../assets/img/admin/logo_light.svg"
                   alt="navbar brand"
                   class="navbar-brand"
                   height="20"
@@ -150,7 +138,55 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
             <!-- End Logo Header -->
           </div>
           <!-- Navbar Header -->
-          <?php include 'nav.php'; ?>
+          <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+            <div class="container-fluid">
+              <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+                <li class="nav-item topbar-user dropdown hidden-caret">
+                  <a
+                    class="dropdown-toggle profile-pic"
+                    data-bs-toggle="dropdown"
+                    href="#"
+                    aria-expanded="false"
+                  >
+                    <div class="avatar-sm">
+                      <img
+                        src="../../assets/img/profile.png"
+                        alt="..."
+                        class="avatar-img rounded-circle"
+                      />
+                    </div>
+                    <span class="profile-username">
+                    <span class="fw-bold"><?php print $_SESSION['name'] ?> <?php print $_SESSION['last_name'] ?></span>
+                    </span>
+                  </a>
+                  <ul class="dropdown-menu dropdown-user animated fadeIn">
+                    <div class="dropdown-user-scroll scrollbar-outer">
+                      <li>
+                        <div class="user-box">
+                          <div class="avatar-lg">
+                            <img
+                              src="../assets/img/profile.jpg"
+                              alt="image profile"
+                              class="avatar-img rounded"
+                            />
+                          </div>
+                          <div class="u-text">
+                            <h4><?php print $_SESSION['name'] ?> <?php print $_SESSION['last_name'] ?></h4>
+                            <p class="text-muted">sample@gmail.com</p>
+                          
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="../../index.php">Logout</a>
+                      </li>
+                    </div>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </nav>
           <!-- End Navbar -->
         </div>
 
@@ -360,7 +396,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                      
                                     echo '
                                     <td>
-                                        <a href="./orders/orders_view.php?id='. $id .'" class="btn btn-info btn-sm">View</a>
+                                        <a href="./orders_view.php?id='. $id .'" class="btn btn-info btn-sm">View</a>
                                     </td>
                                 </tr>';
                             ?>
@@ -397,40 +433,40 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
       <!-- End Custom template -->
     </div>
     <!--   Core JS Files   -->
-    <script src="assets/js/core/jquery-3.7.1.min.js"></script>
-    <script src="assets/js/core/popper.min.js"></script>
-    <script src="assets/js/core/bootstrap.min.js"></script>
+    <script src="../../assets/js/core/jquery-3.7.1.min.js"></script>
+    <script src="../../assets/js/core/popper.min.js"></script>
+    <script src="../../assets/js/core/bootstrap.min.js"></script>
 
     <!-- jQuery Scrollbar -->
-    <script src="assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
 
     <!-- Chart JS -->
-    <script src="assets/js/plugin/chart.js/chart.min.js"></script>
+    <script src="../../assets/js/plugin/chart.js/chart.min.js"></script>
 
     <!-- jQuery Sparkline -->
-    <script src="assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+    <script src="../../assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
 
     <!-- Chart Circle -->
-    <script src="assets/js/plugin/chart-circle/circles.min.js"></script>
+    <script src="../../assets/js/plugin/chart-circle/circles.min.js"></script>
 
     <!-- Datatables -->
-    <script src="assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="../../assets/js/plugin/datatables/datatables.min.js"></script>
 
     <!-- Bootstrap Notify -->
-    <script src="assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+    <script src="../../assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
 
     <!-- jQuery Vector Maps -->
-    <script src="assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
-    <script src="assets/js/plugin/jsvectormap/world.js"></script>
+    <script src="../../assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+    <script src="../../assets/js/plugin/jsvectormap/world.js"></script>
 
     <!-- Sweet Alert -->
-    <script src="assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+    <script src="../../assets/js/plugin/sweetalert/sweetalert.min.js"></script>
 
  
-    <script src="assets/js/admin.min.js"></script>
+    <script src="../../assets/js/admin.min.js"></script>
 
-    <script src="assets/js/setting-demo.js"></script>
-    <script src="assets/js/demo.js"></script>
+    <script src="../../assets/js/setting-demo.js"></script>
+    <script src="../../assets/js/demo.js"></script>
     <script>
        $("#multi-filter-select").DataTable({
           pageLength: 5,
@@ -469,7 +505,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
         const status = $(this).val(); 
 
         $.ajax({
-            url: './orders/update_status.php', 
+            url: './update_status.php', 
             type: 'POST',
             data: { id: id, status: status },
             success: function (response) {

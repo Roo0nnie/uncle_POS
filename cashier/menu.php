@@ -107,9 +107,93 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
   </head>
   <body>
     <div class="wrapper">
+      <!-- Sidebar -->
+      <div class="sidebar" data-background-color="dark">
+        <div class="sidebar-logo">
+          <!-- Logo Header -->
+          <div class="logo-header" data-background-color="dark">
+            <a href="../dashboard.php" class="logo">
+              <img
+                src="../assets/img/admin/logo_light.svg"
+                alt="navbar brand"
+                class="navbar-brand"
+                height="20"
+              />
+            </a>
+            <div class="nav-toggle">
+              <button class="btn btn-toggle toggle-sidebar">
+                <i class="gg-menu-right"></i>
+              </button>
+              <button class="btn btn-toggle sidenav-toggler">
+                <i class="gg-menu-left"></i>
+              </button>
+            </div>
+            <button class="topbar-toggler more">
+              <i class="gg-more-vertical-alt"></i>
+            </button>
+          </div>
+          <!-- End Logo Header -->
+        </div>
+        <div class="sidebar-wrapper scrollbar scrollbar-inner">
+          <div class="sidebar-content">
+            <ul class="nav nav-secondary">
+            <li class="nav-item active">
+                <a href="./menu.php">
+                  <i class="fas fa-shopping-cart"></i>
+                  <p>Menu</p>
+                </a>
+              </li>
+              <li class="nav-section">
+                <span class="sidebar-mini-icon">
+                  <i class="fa fa-ellipsis-h"></i>
+                </span>
+                <h4 class="text-section">Components</h4>
+              </li>
+              <li class="nav-item ">
+                <a href="./order/orders.php">
+                  <i class="fas fa-shopping-cart"></i>
+                  <p>Orders</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  href="./reports/reports.php">
+                  <i class="fas fa-clipboard-list"></i>
+                  <p>Reports & Analytics</p>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- End Sidebar -->
 
-      <div class="cashier-panel">
-        <div class="menu-header">
+      <div class="main-panel">
+        <div class="main-header">
+          <div class="main-header-logo">
+            <!-- Logo Header -->
+            <div class="logo-header" data-background-color="dark">
+              <a href="../dashboard.php" class="logo">
+                <img
+                  src="../assets/img/admin/logo_light.svg"
+                  alt="navbar brand"
+                  class="navbar-brand"
+                  height="20"
+                />
+              </a>
+              <div class="nav-toggle">
+                <button class="btn btn-toggle toggle-sidebar">
+                  <i class="gg-menu-right"></i>
+                </button>
+                <button class="btn btn-toggle sidenav-toggler">
+                  <i class="gg-menu-left"></i>
+                </button>
+              </div>
+              <button class="topbar-toggler more">
+                <i class="gg-more-vertical-alt"></i>
+              </button>
+            </div>
+            <!-- End Logo Header -->
+          </div>
           <!-- Navbar Header -->
           <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
             <div class="container-fluid">
@@ -138,7 +222,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                         <div class="user-box">
                           <div class="avatar-lg">
                             <img
-                              src="assets/img/profile.jpg"
+                              src="../assets/img/profile.jpg"
                               alt="image profile"
                               class="avatar-img rounded"
                             />
@@ -165,135 +249,142 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 
         <div class="container">
           <div class="page-inner">
-            <form action="orders_add.php" method="post" >
-            <div class="d-flex">
-                <div class="card card-stats card-round me-lg-3">
-                  <div class="card-body">
-                    <div class="row align-items-center mb-2">
-                      <p class="card-category">Menu</p>
-                    </div>
-                    
-                    <!-- Product list -->
-                     <div class="flex flex-column">
-                        <div id="order-container">
-                          <div class="row">
-                            <?php
-                            $sql = "SELECT * FROM `product`";
-                            $result = mysqli_query($conn, $sql);
-
-                            if ($result) {
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                    $id = $row['id'];
-                                    $prod_name = htmlspecialchars($row['prod_name'], ENT_QUOTES, 'UTF-8');
-                                    $prod_quantity = $row['prod_quantity'];
-                                    $prod_price = number_format($row['prod_price'], 2);
-
-                                    echo '
-                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
-                                        <div class="card card-black flex-grow-1">
-                                            <div class="card-body">
-                                                <h4 class="text-center">' . htmlspecialchars($prod_name, ENT_QUOTES, 'UTF-8') . '</h4>
-                                                <div class="col-12 mt-3">
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <p class="card-title "><span style="font-size:14px;">Price:</span> $' . $prod_price . '</p>
-                                                        <p class="card-title "><span style="font-size:14px;">Stock:</span> ' . $prod_quantity . '</p>
-                                                    </div>
-                                                    <div class="input-group mt-3">
-                                                        <button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity(this, ' . $prod_quantity . ', ' . $prod_price . ')">-</button>
-                                                        <input type="number" name="products[' . $id . '][quantity]" class="form-control text-center quantity-input" value="0" min="0" max="' . $prod_quantity . '" data-price="' . $prod_price . '" readonly>
-                                                        <button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity(this, ' . $prod_quantity . ', ' . $prod_price . ')">+</button>
-                                                    </div>
-                                                    <input type="hidden" name="products[' . $id . '][id]" value="' . $id . '">
-                                                    <input type="hidden" name="products[' . $id . '][price]" value="' . $prod_price . '">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>';
-                                }
-                            } else {
-                                echo '<p>No products found.</p>';
-                            }
-                            ?>
-
-                          </div>
-                        </div>
-                    </div>
-                  </div>
-                
-                </div>
-
-
-                 <!-- Payment Process -->
+            
+            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+              <div>
+              
+              </div>
+            </div>
+            <div class="row">
+            <form action="orders_add.php" method="post">
+              <div class="row">
+                <div class="col-8">
                 <div class="card card-stats card-round">
                   <div class="card-body">
+                    <div class="row align-items-center">
+                      <p class="card-category">Product Menu</p>
+                    </div>
                     
                     <!-- Product list -->
-                    <div class="flex flex-column">
-                      <!-- Order Summary -->
-                      <div class="mb-4">
-                        <div class="card card-black">
-                          <div class="card-body">
-                            <h4>Order Summary</h4>
-                            <div class="row">
-                              <div class="input-group mb-3">
-                                <span class="input-group-text" id="basic-addon2">Order Date: </span>
-                                <input type="date" name="order_date" id="order-date" class="form-control"  aria-label="Username" aria-describedby="basic-addon2" required readonly>
-                              </div> 
+                    <div id="order-container">
+                      <div class="row">
+                      <?php
+                        $sql = "SELECT * FROM `product`";
+                        $result = mysqli_query($conn, $sql);
 
-                              <div class="input-group mb-3">
-                                <span class="input-group-text" id="basic-addon1">Transaction ID: </span>
-                                <input type="text" name="trans_id" id="order-id" class="form-control"  aria-label="Username" aria-describedby="basic-addon1" required readonly>
-                              </div>  
-                            
-                            </div>
-                            <div class="d-flex justify-content-between justify-content-center align-items-center">
-                                <h4 class="card-title">Total Cost:</h4>
-                                <div>
-                                <input type="number" id="total-cost" name="total_cost" class="form-control" value="0.00" readonly>
-                                </div>
-                              </div>
+                        if ($result) {
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                $id = $row['id'];
+                                $prod_name = htmlspecialchars($row['prod_name'], ENT_QUOTES, 'UTF-8');
+                                $prod_quantity = $row['prod_quantity'];
+                                $prod_price = number_format($row['prod_price'], 2);
 
-                            <h5 class="mt-5">Customer Information</h5>
-                            <input type="text" name="f_name" class="form-control mb-2" placeholder="Customer name" required>
-                            <input type="text" name="m_name" class="form-control mb-2" placeholder="Middle name">
-                            <input type="text" name="l_name" class="form-control mb-2" placeholder="Last name">
-                            <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
-                            <input type="text" name="phone" class="form-control mb-2" placeholder="Mobile phone" required>
-                            
-                          </div>
-                        </div>
-                      </div>
-                    
-                      <!-- Delivery and Payment -->
-                      <div class="card">
-                        <div class="">
-                          <div class="card-body">
-                            <h5>Delivery Information</h5>
-                            <input type="text" name="address" class="form-control mb-2" placeholder="Enter delivery address" required>
-                            <textarea name="instruction" class="form-control" rows="3" placeholder="Enter delivery instructions"></textarea>
-                          </div>
-                        </div>
-                        <div class="">
-                          <div class="card-body">
-                            <h5>Payment Information</h5>
-                            <select name="pay_method" class="form-control">
-                              <option value="Cash on delivery">Cash On Delivery</option>
-                              <option value="Gcash">Gcash</option>
-                              <option value="Credit card">Credit Card</option>
-                            </select>
-                          </div>
-                        </div>
+                                echo '
+                                <div class="col-lg-4 col-sm-12 col-md-6 mb-3 mt-3">
+                                    <div class="card card-black flex-grow-1">
+                                        <div class="card-body">
+                                            <h4 class="text-center">' . htmlspecialchars($prod_name, ENT_QUOTES, 'UTF-8') . '</h4>
+                                            <div class="col-12 mt-5">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <p class="card-title mb-0"><span style="font-size:14px;">Price:</span> $' . $prod_price . '</p>
+                                                    <p class="card-title mb-0"><span style="font-size:14px;">Stock:</span> ' . $prod_quantity . '</p>
+                                                </div>
+                                                <div class="input-group mt-3">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity(this, ' . $prod_quantity . ', ' . $prod_price . ')">-</button>
+                                                    <input type="number" name="products[' . $id . '][quantity]" class="form-control text-center quantity-input" value="0" min="0" max="' . $prod_quantity . '" data-price="' . $prod_price . '" readonly>
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity(this, ' . $prod_quantity . ', ' . $prod_price . ')">+</button>
+                                                </div>
+                                                <input type="hidden" name="products[' . $id . '][id]" value="' . $id . '">
+                                                <input type="hidden" name="products[' . $id . '][price]" value="' . $prod_price . '">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>';
+                            }
+                        } else {
+                            echo '<p>No products found.</p>';
+                        }
+                        ?>
+
                       </div>
                     </div>
-                   
-                    <button type="submit" name="submit" class="btn btn-primary mt-3">Submit Order</button>
-                    <a href="../orders.php" class="btn btn-secondary mt-3">Back</a>
+                    
+                      
                   </div>
                 </div>
+                </div>
 
+              <div class="col-4">
+              <div class="card card-stats card-round">
+                    <div  class="card-body">
+                      <!-- Order Summary --> 
+                      <div class="row align-items-center">
+                        <p class="card-category">Product Menu</p>
+                      </div>
+                        <div class="my-4">
+                          <div class="">
+                            <div class="">
+                              <h5>Customer Information</h5>
+                              <input type="text" name="f_name" class="form-control mb-2" placeholder="Customer name" required>
+                              <input type="text" name="m_name" class="form-control mb-2" placeholder="Middle name">
+                              <input type="text" name="l_name" class="form-control mb-2" placeholder="Last name">
+                              <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
+                              <input type="text" name="phone" class="form-control mb-2" placeholder="Mobile phone" required>
+                            </div>
+                          </div>
+                        </div>
 
-           
+                        <div class="mt-5">
+                          <h5>Payment Information</h5>
+                                <select name="pay_method" class="form-control">
+                                  <option value="Cash on delivery">Cash On Delivery</option>
+                                  <option value="Gcash">Gcash</option>
+                                  <option value="Credit card">Credit Card</option>
+                                </select>
+                          </div>
+                        
+                        <!-- Delivery and Payment -->
+                        <div class="row">
+                          <div class="mt-5">
+                          <h5>Delivery Information</h5>
+                                <input type="text" name="address" class="form-control mb-2" placeholder="Enter delivery address" required>
+                                <textarea name="instruction" class="form-control" rows="3" placeholder="Enter delivery instructions"></textarea>
+                          </div>
+                          
+                        </div>
+
+                        <div class="mt-5">
+                            <h4>Order Summary</h4>
+                            <div class="row">
+                              <div class="">
+                                <div class="input-group mb-3">
+                                  <span class="input-group-text" id="basic-addon2">Order Date: </span>
+                                  <input type="date" name="order_date" id="order-date" class="form-control"  aria-label="Username" aria-describedby="basic-addon2" required readonly>
+                                </div> 
+
+                                <div class="input-group mb-3">
+                                  <span class="input-group-text" id="basic-addon1">Transaction ID: </span>
+                                  <input type="text" name="trans_id" id="order-id" class="form-control"  aria-label="Username" aria-describedby="basic-addon1" required readonly>
+                                </div>  
+                              </div>
+                            </div>
+                          </div>
+                              
+                          <div class=" mt-5">
+                            <h4 class="card-title">Total Cost:</h4>
+                            <div>
+                              <input type="number" id="total-cost" name="total_cost" class="form-control" value="0.00" readonly>
+                            </div>
+                          </div>
+
+                        <button type="submit" name="submit" class="btn btn-primary mt-3 w-100 ">Submit Order</button>
+                    </div>
+                </div>
+              </div>
+              </div>
             </form>
+              
+            </div>
             
           </div>
         </div>
