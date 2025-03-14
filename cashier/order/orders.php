@@ -101,7 +101,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               <li class="nav-item">
                 <a  href="../reports/reports.php">
                   <i class="fas fa-clipboard-list"></i>
-                  <p>Reports & Analytics</p>
+                  <p>Analytics</p>
                 </a>
               </li>
             </ul>
@@ -221,7 +221,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
             <div class="row">
 
             <?php
-               $doneQuery = "SELECT COUNT(*) as total_received FROM customer WHERE status = 'Received'";
+               $doneQuery = "SELECT COUNT(*) as total_received FROM customer WHERE status = 'Done'";
                $doneResult = mysqli_query($conn, $doneQuery);
                $doneDeliveries = mysqli_fetch_assoc($doneResult)['total_received'];
 
@@ -241,7 +241,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               $totalOrders = mysqli_fetch_assoc($orderResult)['total_orders'];
             ?>
 
-              <div class="col-sm-6 col-md-3">
+              <div class="col-sm-6 col-md-4">
                 <div class="card card-stats card-round">
                   <div class="card-body">
                     <div class="row align-items-center">
@@ -262,28 +262,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   </div>
                 </div>
               </div>
-              <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                  <div class="card-body">
-                    <div class="row align-items-center">
-                      <div class="col-icon">
-                        <div
-                          class="icon-big text-center icon-info bubble-shadow-small"
-                        >
-                          <i class="fas fa-times-circle"></i>
-                        </div>
-                      </div>
-                      <div class="col col-stats ms-3 ms-sm-0">
-                        <div class="numbers">
-                          <p class="card-category">Cancelled Orders</p>
-                          <h4 class="card-title"><?php echo number_format($cancelDeliveries) ?></h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-md-3">
+              <div class="col-sm-6 col-md-4">
                 <div class="card card-stats card-round">
                   <div class="card-body">
                     <div class="row align-items-center">
@@ -304,7 +283,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   </div>
                 </div>
               </div>
-              <div class="col-sm-6 col-md-3">
+              <div class="col-sm-6 col-md-4">
                 <div class="card card-stats card-round">
                   <div class="card-body">
                     <div class="row align-items-center">
@@ -340,23 +319,12 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                             <th>Transaction ID</th>
                             <th>Customer</th>
                             <th>Date</th>
-                            <th>Delivery Address</th>
-                            <th>Total Price</th>
+                            <th>Payment</th>
+                            <th>Price</th>
                             <th>Status</th>
                             <th>Action</th>
                           </tr>
                         </thead>
-                        <tfoot>
-                          <tr>
-                            <th>Transaction ID</th>
-                            <th>Customer</th>
-                            <th>Date</th>
-                            <th>Delivery Address</th>
-                            <th>Total Price</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                          </tr>
-                        </tfoot>
                         <tbody>
                         <?php
                             $sql = "Select * from `customer`";
@@ -372,6 +340,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                     $order_date = $row['date'];
                                     $order_address = $row['address'];
                                     $order_price = $row['total_price'];
+                                    $order_pay = $row['cus_payment'];
                                     $order_status = $row['status'];
                                     $id_loop += 1;
 
@@ -379,8 +348,11 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                     <td>' . $order_id . '</td>
                                     <td>' . $order_first . ' '. $order_last . '</td>
                                     <td>'. $order_date .'</td>
-                                    <td>'. $order_address .'</td>
-                                    <td>'.'$ '. number_format($order_price, 2) .'</td>';
+                                     <td>'.'$ '. number_format($order_pay, 2) .'</td>
+                                    <td>'.'$ '. number_format($order_price, 2) .'</td>
+                                    
+                                    
+                                    ';
 
                                     if($row['status'] == "Pending") {
                                       echo '<td>

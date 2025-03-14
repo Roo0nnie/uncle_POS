@@ -108,7 +108,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
               <li class="nav-item active">
                 <a  href="../reports/reports.php">
                   <i class="fas fa-clipboard-list"></i>
-                  <p>Reports & Analytics</p>
+                  <p>Analytics</p>
                 </a>
               </li>
             </ul>
@@ -311,7 +311,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
               <div class="col-md-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4 class="card-title">Product Sales Details</h4>
+                    <h4 class="card-title">Product Sales</h4>
                   </div>
                   <div class="card-body">
                     <div class="table-responsive">

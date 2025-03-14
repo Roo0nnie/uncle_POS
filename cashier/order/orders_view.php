@@ -150,7 +150,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               <li class="nav-item">
                 <a  href="../reports/reports.php">
                   <i class="fas fa-clipboard-list"></i>
-                  <p>Reports & Analytics</p>
+                  <p>Analytics</p>
                 </a>
               </li>
             </ul>

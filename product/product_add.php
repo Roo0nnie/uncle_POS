@@ -10,17 +10,18 @@ session_start();
     $prod_category = mysqli_real_escape_string($conn, trim($_POST['category']));
     $prod_receiveDate = mysqli_real_escape_string($conn, trim($_POST['received']));
     $prod_expiry = mysqli_real_escape_string($conn, trim($_POST['expiry']));
+    $prod_unit = mysqli_real_escape_string($conn, trim($_POST['unit']));
     $prod_expiry = isset($_POST['expiry']) && !empty($_POST['expiry']) ? mysqli_real_escape_string($conn, trim($_POST['expiry'])) : null;
 
-      if(!empty($prod_name) && !empty($prod_quantity) && !empty($prod_price) && !empty($prod_category) && !empty($prod_receiveDate) && $prod_category != 0) {
+      if(!empty($prod_name) && !empty($prod_unit) && !empty($prod_quantity) && !empty($prod_price) && !empty($prod_category) && !empty($prod_receiveDate) && $prod_category != 0) {
 
         $check_sql = "SELECT * FROM `product` WHERE prod_name = '$prod_name'";
         $check_result = mysqli_query($conn, $check_sql);
 
         if ($check_result && mysqli_num_rows($check_result) == 0) { 
 
-          $sql = "INSERT INTO product (prod_name, prod_quantity, prod_price, prod_category, prod_receivedDate, prod_expiry, created_at) 
-          VALUES ('$prod_name', '$prod_quantity', '$prod_price', '$prod_category', '$prod_receiveDate', ".($prod_expiry === null ? "NULL" : "'$prod_expiry'").", NOW())";
+          $sql = "INSERT INTO product (unit, prod_name, prod_quantity, prod_price, prod_category, prod_receivedDate, prod_expiry, created_at) 
+          VALUES ('$prod_unit','$prod_name', '$prod_quantity', '$prod_price', '$prod_category', '$prod_receiveDate', ".($prod_expiry === null ? "NULL" : "'$prod_expiry'").", NOW())";
          
           if (mysqli_query($conn, $sql)) {
             $_SESSION['error_message'] = "Product added successfully.";
@@ -314,11 +315,25 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 
                       <div class="row align-items-center">
                           <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
-                            <div class="numbers">
+                            <div class="d-flex justify-content-between">
+                            <div class="numbers w-100 mx-3">
                                 <div class="mt-4">
                                     <h4 class="card-title">Quantity</h4>
                                     <input type="number" class="form-control" name="quantity" value="0">
                                 </div>
+                            </div>
+                            <div class="numbers">
+                                <div class="mt-4">
+                                    <h4 class="card-title">Unit</h4>
+                                    <select name="unit" id="" class="form-control">
+                                      <option value="pcs">pcs</option>
+                                      <option value="kg">kg</option>
+                                      <option value="litre">litre</option>
+                                      <option value="box">box</option>
+                                      <option value="case">case</option>
+                                    </select>
+                                </div>
+                            </div>  
                             </div>
                           </div>
                           <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">

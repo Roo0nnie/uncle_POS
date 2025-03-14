@@ -304,23 +304,12 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                             <th>Transaction ID</th>
                             <th>Customer</th>
                             <th>Date</th>
-                            <th>Delivery Address</th>
-                            <th>Total Price</th>
+                            <th>Payment</th>
+                            <th>Price</th>
                             <th>Status</th>
                             <th>Action</th>
                           </tr>
                         </thead>
-                        <tfoot>
-                          <tr>
-                            <th>Transaction ID</th>
-                            <th>Customer</th>
-                            <th>Date</th>
-                            <th>Delivery Address</th>
-                            <th>Total Price</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                          </tr>
-                        </tfoot>
                         <tbody>
                         <?php
                             $sql = "Select * from `customer`";
@@ -334,7 +323,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                     $order_first = $row['firstname'];
                                     $order_last = $row['lastname'];
                                     $order_date = $row['date'];
-                                    $order_address = $row['address'];
+                                    $order_pay = $row['cus_payment'];
                                     $order_price = $row['total_price'];
                                     $order_status = $row['status'];
                                     $id_loop += 1;
@@ -343,7 +332,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                     <td>' . $order_id . '</td>
                                     <td>' . $order_first . ' '. $order_last . '</td>
                                     <td>'. $order_date .'</td>
-                                    <td>'. $order_address .'</td>
+                                     <td>'.'$ '. number_format($order_pay, 2) .'</td>
                                     <td>'.'$ '. number_format($order_price, 2) .'</td>';
 
                                     if($row['status'] == "Pending") {

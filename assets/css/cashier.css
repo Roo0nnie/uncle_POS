@@ -1,0 +1,59 @@
+/* Tab */
+
+.tab-content {
+  display: none;
+}
+.active {
+  display: block;
+}
+
+/* Button tab active */
+
+.tab-button.active {
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+.tab-button {
+  margin: 0 5px;
+  transition: all 0.3s ease;
+}
+
+/* Button Payment */
+
+.btn-secondary {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+input:invalid {
+  border-color: #dc3545;
+}
+
+/* Product Selected */
+.order-summary {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #f8f9fa;
+}
+
+.list-group-item {
+  border-left: none;
+  border-right: none;
+  border-radius: 0 !important;
+}
+
+.list-group-item:first-child {
+  border-top: none;
+}
+
+.list-group-item:last-child {
+  border-bottom: none;
+}
+
+.total-section {
+  border-top: 2px solid #dee2e6;
+  padding-top: 15px;
+  margin-top: 15px;
+}
