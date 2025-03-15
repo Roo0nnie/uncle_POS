@@ -106,6 +106,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name']) && isset($_SESSION['last_
                   <p>Product</p>
                 </a>
               </li>
+             
               <li class="nav-item">
                 <a href="category.php">
                   <i class="fas fa-tags"></i>
@@ -119,8 +120,14 @@ if (isset($_SESSION['id']) && isset($_SESSION['name']) && isset($_SESSION['last_
                 </a>
               </li>
               <li class="nav-item">
+                <a href="supplier.php">
+                  <i class="fas fa-boxes"></i>
+                  <p>Supplier</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a  href="reports.php">
-                  <i class="fas fa-store"></i>
+                  <i class="fas fa-clipboard-list"></i>
                   <p>Reports</p>
                 </a>
               </li>
@@ -439,7 +446,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name']) && isset($_SESSION['last_
 
                   $product_revenue = [];
                   $highest_sale = 0;
-                  $lowest_sale = PHP_FLOAT_MAX;
+                  $lowest_sale = 0;
 
                   // Process query results
                   while ($row = mysqli_fetch_assoc($result)) {

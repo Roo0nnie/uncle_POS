@@ -48,7 +48,7 @@ function decreaseQuantity(button, stock, price) {
   }
 }
 
-let orderId = Math.floor(Math.random() * 1000000000);
+let orderId = Math.floor(Math.random() * 10000000000000);
 document.getElementById("order-id").value = orderId;
 
 document.addEventListener("DOMContentLoaded", function () {

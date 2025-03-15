@@ -156,6 +156,12 @@ if(isset($_POST['submit'])){
                   <p>Orders</p>
                 </a>
               </li>
+              <li class="nav-item ">
+                <a href="../supplier.php">
+                  <i class="fas fa-boxes"></i>
+                  <p>Supplier</p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a  href="../reports.php">
                   <i class="fas fa-clipboard-list"></i>

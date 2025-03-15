@@ -15,16 +15,31 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
         $view_id = $row_product['id'];
         $view_name = $row_product['prod_name'];
         $view_quantity = $row_product['prod_quantity'];
+        $view_orig_price = $row_product['orig_price'];
+        $view_vat_price = $row_product['vat_percent'];
         $view_price = $row_product['prod_price'];
+        $view_supplier = $row_product['supplier_id'];
         $view_category = $row_product['prod_category'];
         $view_received = $row_product['prod_receivedDate'];
         $view_expiry = $row_product['prod_expiry'];
         $view_created = $row_product['created_at'];
         $view_updated = $row_product['updated_at'];
 
-        $sql_category = "SELECT * FROM `category` WHERE id = $view_category";
-        $result_category = mysqli_query($conn, $sql_category);
-        $row_category = mysqli_fetch_assoc($result_category);
+         $sql_category = "SELECT * FROM `category` WHERE id = $view_category";
+         $result_category = mysqli_query($conn, $sql_category);
+         if ($result_category && mysqli_num_rows($result_category) > 0) {
+             $row_category = mysqli_fetch_assoc($result_category);
+         } else {
+             $row_category = ['name' => '']; 
+         }
+ 
+         $sql_supplier = "SELECT * FROM `supplier` WHERE id = $view_supplier";
+         $result_supplier = mysqli_query($conn, $sql_supplier);
+         if ($result_supplier && mysqli_num_rows($result_supplier) > 0) {
+             $row_supplier = mysqli_fetch_assoc($result_supplier);
+         } else {
+             $row_supplier = ['sup_name' => '']; 
+         }
 
     } else {
       $_SESSION['error_message'] = "No category id found!.";
@@ -141,6 +156,12 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 <a href="../orders.php">
                   <i class="fas fa-shopping-cart"></i>
                   <p>Orders</p>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a href="../supplier.php">
+                  <i class="fas fa-boxes"></i>
+                  <p>Supplier</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -274,7 +295,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               <div class="col-sm-12 col-md-6">
                 <div class="mb-4">
                   <h4 class="card-title">Category</h4>
-                  <input type="text" class="form-control" value="<?php print $row_category['name']; ?>" readonly>
+                  <input type="text" class="form-control" value="<?php print isset($row_category['name']) ? $row_category['name'] : ''; ?>" readonly>
                 </div>
               </div>
             </div>
@@ -297,7 +318,24 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
             <div class="row g-3">
               <div class="col-sm-12 col-md-6">
                 <div class="mb-4">
-                  <h4 class="card-title">Price</h4>
+                  <h4 class="card-title">Supplier</h4>
+                  <input type="text" class="form-control" value="<?php echo isset($row_supplier['sup_name']) ? $row_supplier['sup_name'] : ''; ?>" readonly>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-sm-12 col-md-6">
+                <div class="mb-4">
+
+                  <h4 class="card-title">Original Price</h4>
+                  <input type="number" class="form-control" value="<?php print $view_orig_price; ?>" readonly>
+
+                  <h4 class="card-title mt-2">Vat (%)</h4>
+                  <input type="number" class="form-control" value="<?php print $view_vat_price; ?>" readonly>
+
+                  <h4 class="card-title mt-2">Selling Price</h4>
                   <input type="number" class="form-control" value="<?php print $view_price; ?>" readonly>
                 </div>
               </div>
@@ -319,7 +357,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               <div class="col-sm-12 col-md-6">
                 <div class="mb-4">
                   <h4 class="card-title">Updated</h4>
-                  <input type="datetime" class="form-control" value="<?php echo $view_updated; ?>" readonly>
+                  <input type="datetime" class="form-control" value="<?php echo $view_updated ?>" readonly>
                 </div>
               </div>
             </div>

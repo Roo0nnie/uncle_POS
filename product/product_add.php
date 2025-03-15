@@ -7,10 +7,14 @@ session_start();
     $prod_name = mysqli_real_escape_string($conn, trim($_POST['name']));
     $prod_quantity = mysqli_real_escape_string($conn, trim($_POST['quantity']));
     $prod_price = mysqli_real_escape_string($conn, trim($_POST['price']));
+    $prod_orig_price = mysqli_real_escape_string($conn, trim($_POST['orig_price']));
+    $prod_vat_price = mysqli_real_escape_string($conn, trim($_POST['vat_price']));
     $prod_category = mysqli_real_escape_string($conn, trim($_POST['category']));
     $prod_receiveDate = mysqli_real_escape_string($conn, trim($_POST['received']));
     $prod_expiry = mysqli_real_escape_string($conn, trim($_POST['expiry']));
+    $prod_supplier = mysqli_real_escape_string($conn, trim($_POST['supplier']));
     $prod_unit = mysqli_real_escape_string($conn, trim($_POST['unit']));
+    $prod_supplier = isset($_POST['supplier']) && !empty($_POST['supplier']) ? mysqli_real_escape_string($conn, trim($_POST['supplier'])) : 0;
     $prod_expiry = isset($_POST['expiry']) && !empty($_POST['expiry']) ? mysqli_real_escape_string($conn, trim($_POST['expiry'])) : null;
 
       if(!empty($prod_name) && !empty($prod_unit) && !empty($prod_quantity) && !empty($prod_price) && !empty($prod_category) && !empty($prod_receiveDate) && $prod_category != 0) {
@@ -20,8 +24,8 @@ session_start();
 
         if ($check_result && mysqli_num_rows($check_result) == 0) { 
 
-          $sql = "INSERT INTO product (unit, prod_name, prod_quantity, prod_price, prod_category, prod_receivedDate, prod_expiry, created_at) 
-          VALUES ('$prod_unit','$prod_name', '$prod_quantity', '$prod_price', '$prod_category', '$prod_receiveDate', ".($prod_expiry === null ? "NULL" : "'$prod_expiry'").", NOW())";
+          $sql = "INSERT INTO product (unit, prod_name, prod_quantity, prod_price, prod_category, prod_receivedDate, prod_expiry,orig_price, vat_percent, supplier_id,  created_at) 
+          VALUES ('$prod_unit','$prod_name', '$prod_quantity', '$prod_price', '$prod_category', '$prod_receiveDate', ".($prod_expiry === null ? "NULL" : "'$prod_expiry'")." , '$prod_orig_price'  , '$prod_vat_price',".($prod_supplier === null ? "NULL" : "'$prod_supplier'")." ,    NOW())";
          
           if (mysqli_query($conn, $sql)) {
             $_SESSION['error_message'] = "Product added successfully.";
@@ -138,7 +142,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               <li class="nav-item active">
                 <a href="../product.php">
                   <i class="fas fa-boxes"></i>
-                  <p>product</p>
+                  <p>Product</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -151,6 +155,12 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 <a href="../orders.php">
                   <i class="fas fa-shopping-cart"></i>
                   <p>Orders</p>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a href="../supplier.php">
+                  <i class="fas fa-boxes"></i>
+                  <p>Supplier</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -311,15 +321,43 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                               </div>
                           </div>
                         </div>
+
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                                  <h4 class="card-title">Supplier</h4>
+                                  <select name="supplier" class="form-control">
+                                    <?php 
+                                      $sql = "SELECT * FROM  `supplier`";
+                                      $result = mysqli_query($conn, $sql);
+                                     echo "<option value='0'>Select Supplier</option>";
+                                      while ($row = mysqli_fetch_assoc($result)) {
+                                        echo "<option value='". $row['id']. "'>". $row['sup_name']. "</option>";
+                                     }
+                                    ?>
+                                  </select>
+                              </div>
+                          </div>
+                        </div>
+
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                                <h4 class="card-title">Expiry Date</h4>
+                                <input type="date" name="expiry" class="form-control">
+                              </div>
+                          </div>
+                        </div>
+
                       </div>
 
                       <div class="row align-items-center">
-                          <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="col-sm-12 col-md-6">
                             <div class="d-flex justify-content-between">
-                            <div class="numbers w-100 mx-3">
+                            <div class="numbers w-100 me-4">
                                 <div class="mt-4">
                                     <h4 class="card-title">Quantity</h4>
-                                    <input type="number" class="form-control" name="quantity" value="0">
+                                    <input type="number" class="form-control" name="quantity" value="0" >
                                 </div>
                             </div>
                             <div class="numbers">
@@ -340,7 +378,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                             <div class="numbers">
                               <div class="mt-4">
                                   <h4 class="card-title">Received Date</h4>
-                                  <input type="date" name="received" class="form-control">
+                                  <input type="date" name="received" class="form-control" id="receivedDate">
                               </div>
                                 
                             </div>
@@ -351,17 +389,17 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                           <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
                             <div class="numbers">
                               <div class="mt-4">
-                                  <h4 class="card-title">Price</h4>
-                                  <input type="number" name="price" class="form-control" value="0">
+
+                              <h4 class="card-title">Original Price</h4>
+                              <input type="number" name="orig_price" class="form-control" value="0">
+
+                              <h4 class="card-title mt-2">Vat (%)</h4>
+                              <input type="number" name="vat_price" class="form-control" value="0">
+
+                              <h4 class="card-title mt-2">Selling Price</h4>
+                              <input type="number" name="price" class="form-control" value="0" readonly>
                               </div>
-                            </div>
-                          </div>
-                          <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
-                            <div class="numbers">
-                                <div class="mt-4">
-                                    <h4 class="card-title">Expiry Date</h4>
-                                    <input type="date" name="expiry" class="form-control">
-                                </div>
+
                             </div>
                           </div>
                         </div>
@@ -429,6 +467,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 
     <script src="../assets/js/setting-demo.js"></script>
     <script src="../assets/js/demo.js"></script>
+    <script src="../assets/js/product.js"></script>
   </body>
 </html>
 <?php

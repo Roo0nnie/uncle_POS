@@ -221,7 +221,9 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
             <div class="row">
 
             <?php
-               $doneQuery = "SELECT COUNT(*) as total_received FROM customer WHERE status = 'Done'";
+
+              $date = date('Y-m-d');
+               $doneQuery = "SELECT COUNT(*) as total_received FROM customer WHERE Date(`date`) = '$date'";
                $doneResult = mysqli_query($conn, $doneQuery);
                $doneDeliveries = mysqli_fetch_assoc($doneResult)['total_received'];
 
@@ -296,7 +298,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Done Orders</p>
+                          <p class="card-category">Today's Order</p>
                           <h4 class="card-title"><?php echo number_format($doneDeliveries) ?></h4>
                         </div>
                       </div>
@@ -309,7 +311,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               <div class="col-md-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4 class="card-title">Orders</h4>
+                    <h4 class="card-title">Today's Order</h4>
                   </div>
                   <div class="card-body">
                     <div class="table-responsive">
@@ -327,7 +329,9 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                         </thead>
                         <tbody>
                         <?php
-                            $sql = "Select * from `customer`";
+
+                            $todaysDate = date('Y-m-d');
+                            $sql = "Select * from `customer` where Date(`date`) = '$todaysDate'";
 
                             $result = mysqli_query($conn, $sql);
                             $id_loop = 0;

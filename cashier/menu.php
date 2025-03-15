@@ -254,60 +254,57 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
           <div class="page-inner">
             
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+              <div>
+                <h3 class="fw-bold mb-3">Menu</h3>
+              </div>
             </div>
-
-            
-
 
 
             <div class="row">
             <form action="" method="post">
               <div class="row">
+                <!-- Product List -->
                 <div class="col-8">
-                <!-- Product List -->
-                <div>
-                <div class="card-body">
-                <div>
-                <div class="tab-buttons d-flex gap-3">
-                  <button class="tab-button btn active card card-black" onclick="showTab('veges')">Vegetables</button>
-                  <button class="tab-button btn card" onclick="showTab('fruits')">Fruits</button>
-                  <button class="tab-button btn card" onclick="showTab('meat')">Meat</button>
-                  <button class="tab-button btn card" onclick="showTab('drinks')">Drinks</button>
-                  <button class="tab-button btn card" onclick="showTab('milk')">Milk</button>
-              </div>
-            </div>
+                  <div class="card-body">
+                    <div>
+                      <div class="tab-buttons d-flex gap-3">
+                        <button class="tab-button btn active card card-black" onclick="showTab('veges')">Vegetables</button>
+                        <button class="tab-button btn card" onclick="showTab('fruits')">Fruits</button>
+                        <button class="tab-button btn card" onclick="showTab('meat')">Meat</button>
+                        <button class="tab-button btn card" onclick="showTab('drinks')">Drinks</button>
+                        <button class="tab-button btn card" onclick="showTab('milk')">Milk</button>
+                      </div>
+                    </div>
 
-            <div id="veges" class="tab-content active">
-            <?php include './product/vege.php'?>
-            </div>
+                    <div id="veges" class="tab-content active">
+                      <?php include './product/vege.php'?>
+                    </div>
 
-            <div id="fruits" class="tab-content">
-              <?php include './product/fruit.php'?>
-            </div>
+                    <div id="fruits" class="tab-content">
+                      <?php include './product/fruit.php'?>
+                    </div>
 
-            <div id="meat" class="tab-content">
-              <?php include './product/meat.php'?>
-            </div>
+                    <div id="meat" class="tab-content">
+                      <?php include './product/meat.php'?>
+                    </div>
 
-            <div id="drinks" class="tab-content">
-              <?php include './product/drink.php'?>
-            </div>
+                    <div id="drinks" class="tab-content">
+                      <?php include './product/drink.php'?>
+                    </div>
 
-            <div id="milk" class="tab-content">
-              <?php include './product/milk.php'?>
-            </div>
-                    
-            </div>
-          </div>
-          </div>
-                <!-- Product List -->
+                    <div id="milk" class="tab-content">
+                      <?php include './product/milk.php'?>
+                    </div>
+                  </div>
+                </div>
+                <!-- End Product List -->
 
-              <div class="col-4">
-              <div class="card card-stats card-round">
-                    <div  class="card-body">
-                      <!-- Order Summary --> 
+                <!-- Order Summary -->
+                <div class="col-4">
+                  <div class="card card-stats card-round">
+                    <div class="card-body">
                       <div class="row align-items-center">
-                      <?php
+                        <?php
                           if (isset($_SESSION['error_message'])) {
                               echo "<p class='text-danger text-center'>" . $_SESSION['error_message'] . "</p>";
                               unset($_SESSION['error_message']); 
@@ -318,72 +315,61 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                         ?>
 
                         <p class="card-category">Order Summary</p>
-                       <div class="d-flex gap-5 mt-3">
-                        <div class="">
+                        <div class="d-flex gap-5 mt-3">
+                          <div>
                             <label for="">Date:</label>
-                            <input type="date" name="order_date" id="order-date" class="form-control"  aria-label="Username" aria-describedby="basic-addon2" required readonly>
+                            <input type="date" name="order_date" id="order-date" class="form-control" required readonly>
                           </div>
-                          <div class="">
+                          <div>
                             <label for="">Transaction ID:</label>
-                            <input type="text" name="trans_id" id="order-id" class="form-control"  aria-label="Username" aria-describedby="basic-addon1" required readonly>
-                          </div>
-                       </div>
-                       <div class="mt-2">
-                          <div class="">
-                            <div class="">
-                             
-                              <div class="mt-4">
-                              <label for="">Customer Name</label>
-                              <input type="text" name="f_name" class="form-control mb-2" placeholder="eg. John Doe" required>
-                              </div>
-                            </div>
+                            <input type="text" name="trans_id" id="order-id" class="form-control" required readonly>
                           </div>
                         </div>
-                        <div class="mt-2">
-                        <label for="">Payment Method</label>
-                            <select name="pay_method" class="form-control">
-                              <option value="Cash">Cash</option>
-                              <option value="Gcash">Gcash</option>
-                              <option value="Credit card">Credit Card</option>
-                            </select>
-                        </div>
-                        
-                        <!-- Product Selected display here -->
+
                         <div class="mt-4">
-                            <h5>Items</h5>
-                            <div id="selected-products" class="list-group">
-                                <!-- Selected products will be displayed here -->
-                            </div>
-                           <div class="mt-3">
-                           <h4 class="card-title">Total Cost:</h4>
-                            <div>
-                              <input type="number" id="total-cost" name="total_cost" class="form-control" value="0.00" readonly>
-                            </div>
-                           </div>
+                          <label for="">Customer Name</label>
+                          <input type="text" name="f_name" class="form-control mb-2" placeholder="eg. John Doe" required>
                         </div>
-                      </div>
+
+                        <div class="mt-2">
+                          <label for="">Payment Method</label>
+                          <select name="pay_method" class="form-control">
+                            <option value="Cash">Cash</option>
+                            <option value="Gcash">Gcash</option>
+                            <option value="Credit card">Credit Card</option>
+                          </select>
+                        </div>
+
+                        <div class="mt-4">
+                          <h5>Items</h5>
+                          <div id="selected-products" class="list-group">
+                            <!-- Selected products will be displayed here -->
+                          </div>
+                          <div class="mt-3">
+                            <h4 class="card-title">Total Cost:</h4>
+                            <input type="number" id="total-cost" name="total_cost" class="form-control" value="0.00" readonly>
+                          </div>
+                        </div>
+
+                        <div class="mt-3">
+                          <label for="">Your Payment</label>
+                          <input type="number" id="total-payment" name="total_payment" class="form-control" placeholder="0.00" step="0.01" required>
+                        </div>
                         
 
-                       
-                              
-                        <div class="mt-3">
-                          <div class="mt-3">
-                          <label for="">Your Payment</label>
-                              <input type="number" 
-                                    id="total-payment" 
-                                    name="total_payment" 
-                                    class="form-control" 
-                                    
-                                    placeholder="0.00"
-                                    step="0.01" required>
-                          </div>
+                        <div class="d-flex align-content-center">
+                          <button type="submit" name="submit" class="btn btn-primary w-100 mt-5">Submit Order</button>
+                        </div>
+                        
+
                       </div>
-                      <button type="submit" name="submit" class="btn btn-primary mt-3 w-100">Submit Order</button>
                     </div>
+                  </div>
                 </div>
-              </div>
-              </div>
+                <!-- End Order Summary -->
+              </div> <!-- Close .row -->
             </form>
+
             </div>
             
           </div>

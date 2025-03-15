@@ -79,7 +79,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
         </div>
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
-          <ul class="nav nav-secondary">
+            <ul class="nav nav-secondary">
               <li class="nav-item">
                 <a href="dashboard.php">
                   <i class="fas fa-home"></i>
@@ -92,7 +92,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 </span>
                 <h4 class="text-section">Components</h4>
               </li>
-              <li class="nav-item active">
+              <li class="nav-item">
                 <a href="product.php">
                   <i class="fas fa-boxes"></i>
                   <p>Product</p>
@@ -111,7 +111,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   <p>Orders</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item active">
                 <a href="supplier.php">
                   <i class="fas fa-boxes"></i>
                   <p>Supplier</p>
@@ -171,7 +171,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
           ?>
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
               <div>
-                <h3 class="fw-bold mb-3">Product List</h3>
+                <h3 class="fw-bold mb-3">Supplier List</h3>
                 <div class="page-header">
                   <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
@@ -183,13 +183,13 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                      <a href="#">product</a>
+                      <a href="#">Supplier</a>
                     </li>
                   </ul>
                 </div>
               </div>
               <div class="ms-md-auto py-2 py-md-0">
-                <a href="./product/product_add.php" class="btn btn-primary "><i class="fas fa-cart-plus"></i> Add Products</a>
+                <a href="./supplier/supplier_add.php" class="btn btn-primary "><i class="fas fa-cart-plus"></i> Add suppliers</a>
               </div>
             </div>
             <div class="row">
@@ -206,10 +206,10 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Total Products</p>
+                          <p class="card-category">Total Suppliers</p>
                           <h4 class="card-title">
                             <?php 
-                              $sql = "SELECT COUNT(*) FROM product";
+                              $sql = "SELECT COUNT(*) FROM supplier";
                               $result = mysqli_query($conn, $sql);
                               $row = mysqli_fetch_array($result);
 
@@ -217,45 +217,9 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                 echo $row[0];
                               }
                               else {
-                                echo "No product available";
+                                echo "No supplier available";
                               }
                            ?>
-                          </h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-md-6">
-                <div class="card card-stats card-round">
-                  <div class="card-body">
-                    <div class="row align-items-center">
-                      <div class="col-icon">
-                        <div
-                          class="icon-big text-center icon-success bubble-shadow-small"
-                        >
-                          <i class="fas fa-dollar-sign"></i>
-                        </div>
-                      </div>
-                      <div class="col col-stats ms-3 ms-sm-0">
-                        <div class="numbers">
-                          <p class="card-category">Total Quantity of product</p>
-                          <h4 class="card-title">
-                            <?php
-                            $sql = "SELECT SUM(prod_quantity) FROM product";
-                            $result = mysqli_query($conn, $sql);
-                            $row = mysqli_fetch_array($result);
-
-                            if ($row[0] != NULL) {
-                              echo $row[0];
-                            }
-                            else {
-                              echo "No data available";
-                            }
-                            
-                            ?>
-
                           </h4>
                         </div>
                       </div>
@@ -269,68 +233,53 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               <div class="col-md-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4 class="card-title">Products</h4>
+                    <h4 class="card-title">Supplier</h4>
                   </div>
                   <div class="card-body">
                     <div class="table-responsive">
                       <table id="multi-filter-select" class="display table table-striped table-hover">
                       <thead>
                           <tr>
-                            <th>Product</th>
-                            <th>Category</th>
-                            <th>Quantity</th>
-                            <th>Selling </th>
-                            <th>Original </th>
-                            <th>Vat(%)</th>
-                            <th>Expiry </th>
+                            <th>Supplier</th>
+                            <th>Contact</th>
+                            <th>Remark</th>
+                            <th>Status</th>
                             <th>Action</th>
                           </tr>
                         </thead>
-                        <tfoot>
+                        <!-- <tfoot>
                           <tr>
-                          <th>Product</th>
-                            <th>Category</th>
-                            <th>Quantity</th>
-                            <th>Selling </th>
-                            <th>Original </th>
-                            <th>Vat(%)</th>
-                            <th>Expiry Date</th>
+                            <th>Supplier</th>
+                            <th>Contact</th>
+                            <th>Remark</th>
+                            <th>Status</th>
+                            <th>Action</th>
                           </tr>
-                        </tfoot>
+                        </tfoot> -->
                         <tbody>
                         <?php
-                            $sql = "Select * from `product`";
+                            $sql = "Select * from `supplier`";
 
                             $result = mysqli_query($conn, $sql);
                             $id_loop = 0;
                             if ($result) {
                                 while ($row = mysqli_fetch_assoc($result)) {
                                     $id = $row['id'];
-                                    $prod_name = $row['prod_name'];
-                                    $prod_category = $row['prod_category'];
-                                    $prod_quantity = $row['prod_quantity'];
-                                    $prod_price = $row['prod_price'];
-                                    $prod_orig_price = $row['orig_price'];
-                                    $prod_vat_price = $row['vat_percent'];
-                                    $prod_expiry = $row['prod_expiry'];
+                                    $sup_name = $row['sup_name'];
+                                    $sup_phone = $row['phone'];
+                                    $sup_remark = $row['remark'];
+                                    $sup_status = $row['status'];
                                     $id_loop += 1;
 
-                                    $sql_category = "SELECT * FROM `category` WHERE id = $prod_category";
-                                    $result_category = mysqli_query($conn, $sql_category);
-                                    $row_category = mysqli_fetch_assoc($result_category);
-
                                     echo '<tr>
-                                    <td>' . $prod_name . '</td>
-                                    <td>'. $row_category['name'] .'</td>
-                                    <td>'. $prod_quantity .'</td>
-                                    <td>'.'$ '. $prod_price .'</td>
-                                      <td>'.'$ '. $prod_orig_price .'</td>
-                                        <td>'. $prod_vat_price .'%'.'</td>
-                                    <td>'. $prod_expiry .'</td>
+                                    <td>' . $sup_name . '</td>
+                                    <td>'. $sup_phone .'</td>
+                                    <td>'. (strlen($sup_remark) > 50 ? substr($sup_remark, 0, 50) . '...' : $sup_remark) .'</td>
+                                     <td>'. $sup_status .'</td>
                                     <td>
-                                        <a href="./product/product_view.php?id='. $id .'" class="btn btn-info btn-sm">View</a>
-                                        <a href="./product/delete.php?id=' . $id . '" class="btn btn-danger btn-sm">Delete</a>
-                                        <a href="./product/product_edit.php?id='. $id .'" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="./supplier/supplier_view.php?id='. $id .'" class="btn btn-info btn-sm">View</a>
+                                        <a href="./supplier/delete.php?id=' . $id . '" class="btn btn-danger btn-sm">Delete</a>
+                                        <a href="./supplier/supplier_edit.php?id='. $id .'" class="btn btn-warning btn-sm">Edit</a>
                                     </td>
                                 </tr>';
                             ?>

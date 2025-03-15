@@ -136,6 +136,12 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   <p>Orders</p>
                 </a>
               </li>
+              <li class="nav-item ">
+                <a href="../supplier.php">
+                  <i class="fas fa-boxes"></i>
+                  <p>Supplier</p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a  href="../reports.php">
                   <i class="fas fa-clipboard-list"></i>

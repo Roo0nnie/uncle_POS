@@ -244,7 +244,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
             
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
               <div>
-                <h3 class="fw-bold mb-3">View Order</h3>
+                <h3 class="fw-bold mb-3">Order Information</h3>
                 <div class="page-header">
                   <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
@@ -262,12 +262,14 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                         <i class="icon-arrow-right"></i>
                       </li>
                       <li class="nav-item">
-                        <a href="#">View order</a>
+                        <a href="#">Order Information</a>
                       </li>
                   </ul>
                 </div>
               </div>
             </div>
+
+
             <div class="row">
             <div class="col-sm-12 col-md-12">
                 <div class="card card-stats card-round">

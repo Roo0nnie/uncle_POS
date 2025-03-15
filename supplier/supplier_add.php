@@ -4,36 +4,39 @@ session_start();
 
   if(isset($_POST['submit'])) {
 
-    $category_name = mysqli_real_escape_string($conn, trim($_POST['name']));
-    $category_description = mysqli_real_escape_string($conn, trim($_POST['description']));
+    $sup_name = mysqli_real_escape_string($conn, trim($_POST['name']));
+    $sup_phone = mysqli_real_escape_string($conn, trim($_POST['phone']));
+    $sup_remark = mysqli_real_escape_string($conn, trim($_POST['remark']));
+    $sup_status = mysqli_real_escape_string($conn, trim($_POST['status']));
 
-      if(!empty($category_name) && !empty($category_description)) {
+      if(!empty($sup_name) && !empty($sup_phone) && !empty($sup_remark) && !empty($sup_status)) {
 
-        $check_sql = "SELECT * FROM `category` WHERE name = '$category_name'";
+        $check_sql = "SELECT * FROM `supplier` WHERE sup_name = '$sup_name'";
         $check_result = mysqli_query($conn, $check_sql);
 
         if ($check_result && mysqli_num_rows($check_result) == 0) { 
 
-          $sql = "INSERT INTO category (name, description, created_at) VALUES ('$category_name', '$category_description', NOW())";
-        
+          $sql = "INSERT INTO supplier (sup_name, phone, remark, status, created_at) 
+          VALUES ('$sup_name', '$sup_phone', '$sup_remark', '$sup_status', NOW())";
+         
           if (mysqli_query($conn, $sql)) {
-            $_SESSION['error_message'] = "Added successfully.";
-            header("Location: ../category.php");
+            $_SESSION['success_message'] = "supplier added successfully.";
+            header("Location: ../supplier.php");
             exit();
           } else {
-            $_SESSION['error_message'] = "Failed to add category.";
-            header("Location: ./category_add.php");
+            $_SESSION['error_message'] = "Failed to add supplier.";
+            header("Location: ./supplier_add.php");
             exit();
           }
 
         } else {
           $_SESSION['error_message'] = "Category already exists.";
-          header("Location: ./category_add.php");
+          header("Location: ./supplier_add.php");
           exit();
       }
     } else {
       $_SESSION['error_message'] = "All fields are required";
-      header("Location: ./category_add.php");
+      header("Location: ./supplier_add.php");
       exit();
   }
   mysqli_close($conn);
@@ -128,13 +131,14 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 </span>
                 <h4 class="text-section">Components</h4>
               </li>
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a href="../product.php">
                   <i class="fas fa-boxes"></i>
                   <p>Product</p>
                 </a>
               </li>
-              <li class="nav-item active">
+             
+              <li class="nav-item">
                 <a href="../category.php">
                   <i class="fas fa-tags"></i>
                   <p>Category</p>
@@ -146,7 +150,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   <p>Orders</p>
                 </a>
               </li>
-              <li class="nav-item ">
+              <li class="nav-item active">
                 <a href="../supplier.php">
                   <i class="fas fa-boxes"></i>
                   <p>Supplier</p>
@@ -225,7 +229,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                             />
                           </div>
                           <div class="u-text">
-                          <span class="fw-bold"><?php print $_SESSION['name'] ?> <?php print $_SESSION['last_name'] ?></span>
+                            <h4><?php print $_SESSION['name'] ?> <?php print $_SESSION['last_name'] ?></h4>
                             <p class="text-muted">sample@gmail.com</p>
                           
                           </div>
@@ -246,9 +250,9 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 
         <div class="container">
           <div class="page-inner">
-          <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
               <div>
-                <h3 class="fw-bold mb-3">Add Category</h3>
+                <h3 class="fw-bold mb-3">Add supplier</h3>
                 <div class="page-header">
                   <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
@@ -260,64 +264,99 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                      <a href="#">Category</a>
+                      <a href="#">supplier</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
                       </li>
                       <li class="nav-item">
-                        <a href="#">Add Category</a>
+                        <a href="#">Add supplier</a>
                       </li>
                   </ul>
                 </div>
               </div>
             </div>
+            
+            <!--  -->
             <form action="" method="post">
-                <?php
-                if (isset($_SESSION['error_message'])) {
-                    echo "<p>" . $_SESSION['error_message'] . "</p>";
-                    unset($_SESSION['error_message']); 
-                }
-                ?>
+              <?php
+                  if (isset($_SESSION['error_message'])) {
+                      echo "<p>" . $_SESSION['error_message'] . "</p>";
+                      unset($_SESSION['error_message']); 
+                  }
+
+                  if (isset($_SESSION['success_message'])) {
+                    echo "<p>" . $_SESSION['success_message'] . "</p>";
+                    unset($_SESSION['success_message']); 
+                  }
+                  ?>
+
               <div class="row">
                 <div class="col-sm-12 col-md-12">
                   <div class="card card-stats card-round">
+                    <!--  -->
                     <div class="card-body">
                       <div class="row align-items-center">
-                          <p class="card-category">Category Information</p>
-                        <div class="col-sm-12 col-md-12 ms-3 ms-sm-0">
-                          <div class="numbers">
-                              <div class="mt-4">
-                                  <h4 class="card-title">Category Name</h4>
-                                  <input type="text" name="name" class="form-control" placeholder="Category name" required>
-                              </div>
+                          <p class="card-category">Supplier Information</p>
+                          <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <div class="mt-4">
+                                    <h4 class="card-title">Supplier Name</h4>
+                                    <input type="text" class="form-control" name="name" placeholder="Supplier name">
+                                </div>
+                            </div>
                           </div>
-                        </div>
-                        <div class="col-sm-12 col-md-12 ms-3 ms-sm-0">
-                          <div class="numbers">
-                              <div class="mt-4">
-                                  <h4 class="card-title">Category</h4>
-                                  <div class="form-floating">
-                                      <textarea class="form-control" name="description" placeholder="Category description" id="floatingTextarea2" style="height: 100px" required></textarea>
-                                      <label for="floatingTextarea2">Description</label>
-                                  </div>
-                              </div>
+                          <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <div class="mt-4">
+                                    <h4 class="card-title">Contact</h4>
+                                    <input type="text" class="form-control" name="phone" placeholder="Contact">
+                                </div>
+                            </div>
                           </div>
-                        </div>
                       </div>
+
+                      <!--  -->
+
+                      <div class="row align-items-center">
+                          <p class="card-category">Supplier Information</p>
+                          <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <div class="mt-4">
+                                  <h4 class="card-title">Status</h4>
+                                  <select name="status" class="form-control">
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                  </select>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <div class="mt-4">
+                                  <h4 class="card-title">Remark</h4>
+                                  <textarea  name="remark" class="form-control" style="height: 300px;"></textarea>
+                                </div>
+                            </div>
+                          </div>
+                      </div>
+
+                      <!--  -->
+                    </div>
+                    <!--  -->
                   </div>
-              </div>
-              <div class="ms-md-auto py-2 py-md-0">
-                  <button type="submit" name="submit" class="btn btn-primary">
-                      <i class="fas fa-cart-plus"></i> Add Category
-                  </button>
-                  <a href="../category.php" class="btn btn-secondary ">Back</a>
+                    <div class="ms-md-auto py-2 py-md-0">
+                      <button type="submit" name="submit" class="btn btn-primary ">
+                        <i class="fas fa-cart-plus"></i> Add Supplier
+                      </button>
+                       <a href="../supplier.php" class="btn btn-secondary ">Back</a>
+                    </div>
+                </div>
               </div>
             </form>
-            </div>
+            <!--  -->
           </div>
         </div>
-      </div>
 
         <footer class="footer">
           <div class="container-fluid d-flex justify-content-between">

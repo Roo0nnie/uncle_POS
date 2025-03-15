@@ -2,44 +2,63 @@
 include '../php/db_conn.php';
 session_start();
 
-  if(isset($_POST['submit'])) {
+if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
+  if(isset($_GET['id'])){
 
-    $category_name = mysqli_real_escape_string($conn, trim($_POST['name']));
-    $category_description = mysqli_real_escape_string($conn, trim($_POST['description']));
+    $id = mysqli_real_escape_string($conn, $_GET['id']);
+    $sql_supplier = "SELECT * FROM `supplier` WHERE id = '$id'";
+    $result_supplier = mysqli_query($conn, $sql_supplier);
 
-      if(!empty($category_name) && !empty($category_description)) {
+    if ($result_supplier && mysqli_num_rows($result_supplier) > 0) {
 
-        $check_sql = "SELECT * FROM `category` WHERE name = '$category_name'";
-        $check_result = mysqli_query($conn, $check_sql);
+        $row_supplier = mysqli_fetch_assoc($result_supplier);
+        $edit_id = $row_supplier['id'];
+        $edit_name = $row_supplier['sup_name'];
+        $edit_phone = $row_supplier['phone'];
+        $edit_remark = $row_supplier['remark'];
+        $edit_status = $row_supplier['status'];
+        $edit_created = $row_supplier['created_at'];
+        $edit_updated = $row_supplier['updated_at'];
 
-        if ($check_result && mysqli_num_rows($check_result) == 0) { 
-
-          $sql = "INSERT INTO category (name, description, created_at) VALUES ('$category_name', '$category_description', NOW())";
-        
-          if (mysqli_query($conn, $sql)) {
-            $_SESSION['error_message'] = "Added successfully.";
-            header("Location: ../category.php");
-            exit();
-          } else {
-            $_SESSION['error_message'] = "Failed to add category.";
-            header("Location: ./category_add.php");
-            exit();
-          }
-
-        } else {
-          $_SESSION['error_message'] = "Category already exists.";
-          header("Location: ./category_add.php");
-          exit();
-      }
     } else {
-      $_SESSION['error_message'] = "All fields are required";
-      header("Location: ./category_add.php");
+      $_SESSION['error_message'] = "No category id found!.";
+      header("Location: ../category.php");
       exit();
-  }
-  mysqli_close($conn);
+    }
+} else {
+  $_SESSION['error_message'] = "No ID provided in the URL.";
+  header("Location: ../category.php");
+  exit();
 }
 
-if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
+if(isset($_POST['submit'])){
+  
+    $sup_id = mysqli_real_escape_string($conn, trim($_POST['id']));
+    $sup_name = mysqli_real_escape_string($conn, trim($_POST['name']));
+    $sup_phone = mysqli_real_escape_string($conn, trim($_POST['phone']));
+    $sup_remark = mysqli_real_escape_string($conn, trim($_POST['remark']));
+    $sup_status = mysqli_real_escape_string($conn, trim($_POST['status']));
+
+    $sql_supplier = "UPDATE supplier SET 
+    sup_name = '$sup_name',
+    phone = '$sup_phone',
+    remark = '$sup_remark',
+    status = '$sup_status', ";
+
+    $sql_supplier .= "updated_at = now()
+        WHERE id = '$sup_id'";
+
+  if(mysqli_query($conn, $sql_supplier)){
+    $_SESSION['error_message'] = "Updated supplier successfully!.";
+    header("Location: ../supplier.php");
+    exit();
+  } else {
+    $_SESSION['error_message'] = "Could not update record: ". mysqli_error($conn);
+    header("Location: ../supplier.php");
+    exit();
+  }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,7 +67,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
     <title>Inventory System</title>
     <meta
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-      name="viewport"
+      name="editport"
     />
     <link
       rel="icon"
@@ -128,13 +147,14 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 </span>
                 <h4 class="text-section">Components</h4>
               </li>
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a href="../product.php">
                   <i class="fas fa-boxes"></i>
-                  <p>Product</p>
+                  <p>product</p>
                 </a>
               </li>
-              <li class="nav-item active">
+             
+              <li class="nav-item">
                 <a href="../category.php">
                   <i class="fas fa-tags"></i>
                   <p>Category</p>
@@ -146,10 +166,10 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   <p>Orders</p>
                 </a>
               </li>
-              <li class="nav-item ">
+              <li class="nav-item active">
                 <a href="../supplier.php">
                   <i class="fas fa-boxes"></i>
-                  <p>Supplier</p>
+                  <p>supplier</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -210,7 +230,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       />
                     </div>
                     <span class="profile-username">
-                    <span class="fw-bold"><?php print $_SESSION['name'] ?> <?php print $_SESSION['last_name'] ?></span>
+                      <span class="fw-bold">Admin</span>
                     </span>
                   </a>
                   <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -225,7 +245,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                             />
                           </div>
                           <div class="u-text">
-                          <span class="fw-bold"><?php print $_SESSION['name'] ?> <?php print $_SESSION['last_name'] ?></span>
+                            <h4>Admin</h4>
                             <p class="text-muted">sample@gmail.com</p>
                           
                           </div>
@@ -246,78 +266,101 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 
         <div class="container">
           <div class="page-inner">
-          <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pt-2 pb-4">
               <div>
-                <h3 class="fw-bold mb-3">Add Category</h3>
+                <h3 class="fw-bold mb-3">Edit supplier</h3>
                 <div class="page-header">
                   <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
-                      <a href="#">
-                        <i class="icon-home"></i>
-                      </a>
+                      <a href="#"><i class="icon-home"></i></a>
                     </li>
-                    <li class="separator">
-                      <i class="icon-arrow-right"></i>
-                    </li>
+                    <li class="separator"><i class="icon-arrow-right"></i></li>
                     <li class="nav-item">
-                      <a href="#">Category</a>
+                      <a href="#">supplier</a>
                     </li>
-                    <li class="separator">
-                        <i class="icon-arrow-right"></i>
-                      </li>
-                      <li class="nav-item">
-                        <a href="#">Add Category</a>
-                      </li>
+                    <li class="separator"><i class="icon-arrow-right"></i></li>
+                    <li class="nav-item">
+                      <a href="#">Edit supplier</a>
+                    </li>
                   </ul>
                 </div>
               </div>
             </div>
+
             <form action="" method="post">
-                <?php
-                if (isset($_SESSION['error_message'])) {
-                    echo "<p>" . $_SESSION['error_message'] . "</p>";
-                    unset($_SESSION['error_message']); 
-                }
-                ?>
+              <input type="hidden" value="<?php print $edit_id; ?>" name="id">
               <div class="row">
-                <div class="col-sm-12 col-md-12">
+                <div class="col-12">
                   <div class="card card-stats card-round">
                     <div class="card-body">
-                      <div class="row align-items-center">
-                          <p class="card-category">Category Information</p>
-                        <div class="col-sm-12 col-md-12 ms-3 ms-sm-0">
-                          <div class="numbers">
-                              <div class="mt-4">
-                                  <h4 class="card-title">Category Name</h4>
-                                  <input type="text" name="name" class="form-control" placeholder="Category name" required>
-                              </div>
+                      <p class="card-category fw-bold">supplier Information</p>
+
+                      <div class="row g-3">
+                        <div class="col-sm-12 col-md-6">
+                          <div class="mb-4">
+                            <h4 class="card-title">Supplier Name</h4>
+                            <input type="text" class="form-control" name="name" placeholder="supplier name" value="<?php print $edit_name; ?>">
                           </div>
                         </div>
-                        <div class="col-sm-12 col-md-12 ms-3 ms-sm-0">
-                          <div class="numbers">
-                              <div class="mt-4">
-                                  <h4 class="card-title">Category</h4>
-                                  <div class="form-floating">
-                                      <textarea class="form-control" name="description" placeholder="Category description" id="floatingTextarea2" style="height: 100px" required></textarea>
-                                      <label for="floatingTextarea2">Description</label>
-                                  </div>
-                              </div>
+                        <div class="col-sm-12 col-md-6">
+                          <div class="mb-4">
+                          <h4 class="card-title">Quantity</h4>
+                          <input type="text" class="form-control" name="phone" value="<?php print $edit_phone; ?>">
                           </div>
                         </div>
                       </div>
+
+                      <div class="row g-3">
+                        <div class="col-sm-12 col-md-6">
+                          <div class="mb-4">
+                            <h4 class="card-title">Status</h4>
+                            <select name="status" class="form-control">
+                              <option value="Active" <?php echo ($edit_status == 'Active') ? 'selected' : ''; ?>>Active</option>
+                              <option value="Inactive" <?php echo ($edit_status == 'Inactive') ? 'selected' : ''; ?>>Inactive</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                          <div class="mb-4">
+                            <h4 class="card-title">Remark</h4>
+                            <textarea class="form-control" name="remark"><?php echo htmlspecialchars($edit_remark); ?></textarea>
+                          </div>
+                        </div>
+                      </div>
+                                  
+                      <div class="row g-3">
+                        <div class="col-sm-12 col-md-6">
+                          <div class="mb-4">
+                            <h4 class="card-title">Created</h4>
+                            <input type="datetime" class="form-control" value="<?php echo $edit_created; ?>" readonly>
+                          </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                          <div class="mb-4">
+                            <h4 class="card-title">Updated</h4>
+                            <input type="datetime" class="form-control" value="<?php echo $edit_updated; ?>" readonly>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-start mt-3">
+                  <div class="ms-md-auto py-2 py-md-0">
+                    <button type="submit" name="submit" class="btn btn-primary ">
+                        <i class="fas fa-cart-plus"></i> Update supplier
+                    </button>
+                    <a href="../supplier.php" class="btn btn-secondary ">Back</a>
+                      </div>
                   </div>
               </div>
-              <div class="ms-md-auto py-2 py-md-0">
-                  <button type="submit" name="submit" class="btn btn-primary">
-                      <i class="fas fa-cart-plus"></i> Add Category
-                  </button>
-                  <a href="../category.php" class="btn btn-secondary ">Back</a>
-              </div>
             </form>
-            </div>
           </div>
-        </div>
-      </div>
+</div>
+
 
         <footer class="footer">
           <div class="container-fluid d-flex justify-content-between">
@@ -373,7 +416,8 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 </html>
 <?php
 } else {
-    header("Location: index.php");
-    exit();
+  $_SESSION['error_message'] = "You have to login first.";
+  header("Location: ../index.php");
+  exit();
 }
 ?>

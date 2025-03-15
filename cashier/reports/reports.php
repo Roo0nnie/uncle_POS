@@ -175,7 +175,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
           <div class="page-inner">
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
               <div>
-                <h3 class="fw-bold mb-3">Overall Reports</h3>
+                <h3 class="fw-bold mb-3">Reports</h3>
                 <div class="page-header">
                   <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
@@ -193,6 +193,9 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
             </div>
 
             <?php
+
+            $today = date('Y-m-d');
+
             $sql = "
                 SELECT 
                     p.id, 
@@ -236,7 +239,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
               <div class="col-md-12">
                 <div class="card">
                   <div class="card-header">
-                    <div class="card-title">Product Revenue Line Chart</div>
+                    <div class="card-title">Product Sale Chart</div>
                   </div>
                   <div class="card-body">
                     <div class="chart-container">
@@ -259,7 +262,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Highest Product Revenue</p>
+                          <p class="card-category">Highest Revenue</p>
                           <h4 class="card-title">$ <?php echo number_format($highest_sale, 2); ?></h4>
                         </div>
                       </div>
@@ -278,7 +281,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Lowest Product Revenue</p>
+                          <p class="card-category">Lowest Revenue</p>
                           <h4 class="card-title">$ <?php echo number_format($lowest_sale, 2); ?></h4>
                         </div>
                       </div>
@@ -297,7 +300,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Total Sales Revenue</p>
+                          <p class="card-category">Total Sales</p>
                           <h4 class="card-title">$ <?php echo number_format($total_revenue, 2); ?></h4>
                         </div>
                       </div>
@@ -322,8 +325,8 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
                             <th>Category</th>
                             <th>Stock Quantity</th>
                             <th>Unit Price</th>
-                            <th>Total Sold</th>
-                            <th>Total Sales Value</th>
+                            <th>Sold</th>
+                            <th>Sales Value</th>
                             <th>Estimated Revenue</th>
                           </tr>
                         </thead>

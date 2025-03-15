@@ -98,6 +98,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   <p>Product</p>
                 </a>
               </li>
+             
               <li class="nav-item">
                 <a href="category.php">
                   <i class="fas fa-tags"></i>
@@ -105,13 +106,19 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 </a>
               </li>
               <li class="nav-item active">
-                <a href="./orders.php">
+                <a href="orders.php">
                   <i class="fas fa-shopping-cart"></i>
                   <p>Orders</p>
                 </a>
               </li>
+              <li class="nav-item ">
+                <a href="supplier.php">
+                  <i class="fas fa-boxes"></i>
+                  <p>Supplier</p>
+                </a>
+              </li>
               <li class="nav-item">
-                <a  href="./reports.php">
+                <a  href="reports.php">
                   <i class="fas fa-clipboard-list"></i>
                   <p>Reports</p>
                 </a>
