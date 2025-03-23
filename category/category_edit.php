@@ -138,28 +138,50 @@ if(isset($_POST['submit'])){
                 </span>
                 <h4 class="text-section">Components</h4>
               </li>
-              <li class="nav-item">
+              <li class="nav-item ">
+                <a href="../user.php">
+                <i class="fas fa-user"></i>
+                  <p>Users</p>
+                </a>
+              </li>
+              <li class="nav-item ">
                 <a href="../product.php">
                   <i class="fas fa-boxes"></i>
-                  <p>Product</p>
+                  <p>Products</p>
                 </a>
               </li>
+
               <li class="nav-item active">
                 <a href="../category.php">
-                  <i class="fas fa-tags"></i>
-                  <p>Category</p>
+                <i class="fas fa-folder"></i>  
+                  <p>Categories</p>
                 </a>
               </li>
-              <li class="nav-item">
+             
+              <li class="nav-item ">
                 <a href="../orders.php">
                   <i class="fas fa-shopping-cart"></i>
                   <p>Orders</p>
                 </a>
               </li>
+
+              <li class="nav-item ">
+                <a href="../vat.php">
+                <i class="fas fa-file-invoice-dollar"></i>
+                  <p>Vats</p>
+                </a>
+              </li>
+
+              <li class="nav-item ">
+                <a href="../discount.php">
+                <i class="fas fa-percentage"></i>
+                  <p>Discounts</p>
+                </a>
+              </li>
               <li class="nav-item ">
                 <a href="../supplier.php">
                   <i class="fas fa-boxes"></i>
-                  <p>Supplier</p>
+                  <p>Suppliers</p>
                 </a>
               </li>
               <li class="nav-item">

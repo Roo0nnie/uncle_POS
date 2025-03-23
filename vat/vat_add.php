@@ -4,36 +4,37 @@ session_start();
 
   if(isset($_POST['submit'])) {
 
-    $category_name = mysqli_real_escape_string($conn, trim($_POST['name']));
-    $category_description = mysqli_real_escape_string($conn, trim($_POST['description']));
+    $vat_name = mysqli_real_escape_string($conn, trim($_POST['name']));
+    $vat_vat = mysqli_real_escape_string($conn, trim($_POST['vat']));
+    $vat_description = mysqli_real_escape_string($conn, trim($_POST['description']));
 
-      if(!empty($category_name) && !empty($category_description)) {
+      if(!empty($vat_name) && !empty($vat_vat) && !empty($vat_description)) {
 
-        $check_sql = "SELECT * FROM `category` WHERE name = '$category_name'";
+        $check_sql = "SELECT * FROM `vat` WHERE name = '$vat_name'";
         $check_result = mysqli_query($conn, $check_sql);
 
         if ($check_result && mysqli_num_rows($check_result) == 0) { 
 
-          $sql = "INSERT INTO category (name, description, created_at) VALUES ('$category_name', '$category_description', NOW())";
+          $sql = "INSERT INTO vat (name, vat, description, created_at) VALUES ('$vat_name', '$vat_vat', '$vat_description', NOW())";
         
           if (mysqli_query($conn, $sql)) {
             $_SESSION['error_message'] = "Added successfully.";
-            header("Location: ../category.php");
+            header("Location: ../vat.php");
             exit();
           } else {
-            $_SESSION['error_message'] = "Failed to add category.";
-            header("Location: ./category_add.php");
+            $_SESSION['error_message'] = "Failed to add VAT.";
+            header("Location: ./vat_add.php");
             exit();
           }
 
         } else {
-          $_SESSION['error_message'] = "Category already exists.";
-          header("Location: ./category_add.php");
+          $_SESSION['error_message'] = "VAT already exists.";
+          header("Location: ./vat_add.php");
           exit();
       }
     } else {
       $_SESSION['error_message'] = "All fields are required";
-      header("Location: ./category_add.php");
+      header("Location: ./vat_add.php");
       exit();
   }
   mysqli_close($conn);
@@ -134,41 +135,41 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   <p>Users</p>
                 </a>
               </li>
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../product.php">
                   <i class="fas fa-boxes"></i>
                   <p>Products</p>
                 </a>
               </li>
 
-              <li class="nav-item active">
+              <li class="nav-item">
                 <a href="../category.php">
                 <i class="fas fa-folder"></i>  
                   <p>Categories</p>
                 </a>
               </li>
              
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../orders.php">
                   <i class="fas fa-shopping-cart"></i>
                   <p>Orders</p>
                 </a>
               </li>
 
-              <li class="nav-item ">
+              <li class="nav-item active">
                 <a href="../vat.php">
                 <i class="fas fa-file-invoice-dollar"></i>
                   <p>Vats</p>
                 </a>
               </li>
 
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../discount.php">
                 <i class="fas fa-percentage"></i>
                   <p>Discounts</p>
                 </a>
               </li>
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../supplier.php">
                   <i class="fas fa-boxes"></i>
                   <p>Suppliers</p>
@@ -270,7 +271,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
           <div class="page-inner">
           <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
               <div>
-                <h3 class="fw-bold mb-3">Add Category</h3>
+                <h3 class="fw-bold mb-3">Add VAT  </h3>
                 <div class="page-header">
                   <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
@@ -282,13 +283,13 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                      <a href="#">Category</a>
+                      <a href="#">VAT</a>
                     </li>
                     <li class="separator">
                         <i class="icon-arrow-right"></i>
                       </li>
                       <li class="nav-item">
-                        <a href="#">Add Category</a>
+                        <a href="#">Add VAT</a>
                       </li>
                   </ul>
                 </div>
@@ -306,22 +307,36 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   <div class="card card-stats card-round">
                     <div class="card-body">
                       <div class="row align-items-center">
-                          <p class="card-category">Category Information</p>
+                          <p class="card-category">VAT Information</p>
                         <div class="col-sm-12 col-md-12 ms-3 ms-sm-0">
                           <div class="numbers">
                               <div class="mt-4">
-                                  <h4 class="card-title">Category Name</h4>
-                                  <input type="text" name="name" class="form-control" placeholder="Category name" required>
+                                  <h4 class="card-title">VAT Name</h4>
+                                  <div class="form-floating">
+                                      <input type="text" name="name" class="form-control" placeholder="VAT name" required>
+                                      <label for="floatingTextarea2">Name</label>
+                                  </div>
                               </div>
                           </div>
                         </div>
                         <div class="col-sm-12 col-md-12 ms-3 ms-sm-0">
                           <div class="numbers">
                               <div class="mt-4">
-                                  <h4 class="card-title">Category</h4>
+                                  <h4 class="card-title">Description</h4>
                                   <div class="form-floating">
-                                      <textarea class="form-control" name="description" placeholder="Category description" id="floatingTextarea2" style="height: 100px" required></textarea>
-                                      <label for="floatingTextarea2">Description</label>
+                                      <textarea class="form-control" name="description" placeholder="Description" id="floatingTextarea2" style="height: 100px" required></textarea>
+                                      <label for="floatingTextarea2">Describe your VAT</label>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-12 col-md-12 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                                  <h4 class="card-title">VAT</h4>
+                                  <div class="form-floating">
+                                      <input type="number" class="form-control" name="vat" placeholder="VAT" id="floatingTextarea2" style="height: 100px" required>
+                                      <label for="floatingTextarea2">0.00</label>
                                   </div>
                               </div>
                           </div>
@@ -331,9 +346,9 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               </div>
               <div class="ms-md-auto py-2 py-md-0">
                   <button type="submit" name="submit" class="btn btn-primary">
-                      <i class="fas fa-cart-plus"></i> Add Category
+                      <i class="fas fa-cart-plus"></i> Add VAT
                   </button>
-                  <a href="../category.php" class="btn btn-secondary ">Back</a>
+                  <a href="../vat.php" class="btn btn-secondary ">Back</a>
               </div>
             </form>
             </div>

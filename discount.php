@@ -105,7 +105,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 </a>
               </li>
 
-              <li class="nav-item active">
+              <li class="nav-item">
                 <a href="category.php">
                 <i class="fas fa-folder"></i>  
                   <p>Categories</p>
@@ -126,7 +126,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 </a>
               </li>
 
-              <li class="nav-item">
+              <li class="nav-item active">
                 <a href="discount.php">
                 <i class="fas fa-percentage"></i>
                   <p>Discounts</p>
@@ -192,7 +192,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
           ?>
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
               <div>
-                <h3 class="fw-bold mb-3">Category Management</h3>
+                <h3 class="fw-bold mb-3">Discount Management</h3>
                 <div class="page-header">
                   <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
@@ -204,13 +204,13 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                      <a href="#">Category</a>
+                      <a href="#">Discounts</a>
                     </li>
                   </ul>
                 </div>
               </div>
               <div class="ms-md-auto py-2 py-md-0">
-                <a href="./category/category_add.php" class="btn btn-primary "><i class="fas fa-cart-plus"></i> Add Category</a>
+                <a href="./discount/discount_add.php" class="btn btn-primary "><i class="fas fa-cart-plus"></i> Add Discount</a>
               </div>
             </div>
             <div class="row">
@@ -227,10 +227,10 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Total Category</p>
+                          <p class="card-discount">Total discount</p>
                           <h4 class="card-title">
                             <?php 
-                            $sql = "Select * from `category`";
+                            $sql = "Select * from `discount`";
                             $result = $conn->query($sql);
 
                             if($result) {
@@ -260,9 +260,9 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Recently Added Category</p>
+                          <p class="card-discount">Recently Added Discount</p>
                           <h4 class="card-title"><?php 
-                            $sql = "SELECT COUNT(*) AS recent_count FROM `category` WHERE DATE(created_at) = CURDATE()";
+                            $sql = "SELECT COUNT(*) AS recent_count FROM `discount` WHERE DATE(created_at) = CURDATE()";
                             $result = $conn->query($sql);
 
                             if ($result) {
@@ -285,7 +285,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               <div class="col-md-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4 class="card-title">Supplies</h4>
+                    <h4 class="card-title">Discount List</h4>
                   </div>
                   <div class="card-body">
                     <div class="table-responsive">
@@ -293,40 +293,44 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Category</th>
+                            <th>Name</th>
+                            <th>Discount (%)</th>
                             <th>Description</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                          <tfoot>
-                              <tr>
-                                  <th>#</th>
-                                  <th>Category</th>
-                                  <th>Description</th>
-                                  <th>Action</th>
-                              </tr>
-                          </tfoot>
-                          <tbody>
+                    <tfoot>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Discount</th>
+                            <th>Description</th>
+                            <th>Action</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
                           <?php
 
-                          $sql = "Select * from `category`";
+                          $sql = "Select * from `discount`";
 
                           $result = mysqli_query($conn, $sql);
                           $id_loop = 0;
                           if ($result) {
                               while ($row = mysqli_fetch_assoc($result)) {
                                   $id = $row['id'];
-                                  $cat_name = $row['name'];
-                                  $cat_description = $row['description'];
+                                  $name = $row['name'];
+                                  $discount = $row['discount'];
+                                  $description = $row['description'];
                                   $id_loop += 1;
                                   echo '<tr>
                                   <th scope="row" >' . $id_loop . '</th>
-                                  <td>' . substr($cat_name, 0, 50) . (strlen($cat_name) > 50 ? '...' : '') . '</td>
-                                  <td>' . substr($cat_description, 0, 15) . (strlen($cat_description) > 15 ? '...' : '') . '</td>
+                                  <td>' . $name . '</td>
+                                  <td>'. $discount .'</td>
+                                  <td>' . substr($description, 0, 50) . (strlen($description) > 50 ? '...' : '') . '</td>
                                   <td>
-                                      <a href="./category/category_view.php?id='. $id .'" class="btn btn-info btn-sm">View</a>
-                                      <a href="./category/delete.php?id=' . $id . '" class="btn btn-danger btn-sm">Delete</a>
-                                      <a href="./category/category_edit.php?id='. $id .'" class="btn btn-warning btn-sm">Edit</a>
+                                      <a href="./discount/discount_view.php?id='. $id .'" class="btn btn-info btn-sm">View</a>
+                                      <a href="./discount/delete.php?id=' . $id . '" class="btn btn-danger btn-sm">Delete</a>
+                                      <a href="./discount/discount_edit.php?id='. $id .'" class="btn btn-warning btn-sm">Edit</a>
                                   </td>
                               </tr>';
                           ?>

@@ -121,28 +121,49 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 <h4 class="text-section">Components</h4>
               </li>
               <li class="nav-item ">
+                <a href="../user.php">
+                <i class="fas fa-user"></i>
+                  <p>Users</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="../product.php">
                   <i class="fas fa-boxes"></i>
-                  <p>product</p>
+                  <p>Products</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="../category.php">
+                <i class="fas fa-folder"></i>  
+                  <p>Categories</p>
                 </a>
               </li>
              
-              <li class="nav-item">
-                <a href="../supplier.php">
-                  <i class="fas fa-tags"></i>
-                  <p>supplier</p>
-                </a>
-              </li>
               <li class="nav-item">
                 <a href="../orders.php">
                   <i class="fas fa-shopping-cart"></i>
                   <p>Orders</p>
                 </a>
               </li>
+
+              <li class="nav-item ">
+                <a href="../vat.php">
+                <i class="fas fa-file-invoice-dollar"></i>
+                  <p>Vats</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="../discount.php">
+                <i class="fas fa-percentage"></i>
+                  <p>Discounts</p>
+                </a>
+              </li>
               <li class="nav-item active">
                 <a href="../supplier.php">
                   <i class="fas fa-boxes"></i>
-                  <p>supplier</p>
+                  <p>Suppliers</p>
                 </a>
               </li>
               <li class="nav-item">

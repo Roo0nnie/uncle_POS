@@ -2,44 +2,37 @@
 include '../php/db_conn.php';
 session_start();
 
-  if(isset($_POST['submit'])) {
+if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
+  if(isset($_GET['id'])){
 
-    $category_name = mysqli_real_escape_string($conn, trim($_POST['name']));
-    $category_description = mysqli_real_escape_string($conn, trim($_POST['description']));
+    $id = mysqli_real_escape_string($conn, $_GET['id']);
+    $sql_user = "SELECT * FROM `user` WHERE id = '$id'";
+    $result_user = mysqli_query($conn, $sql_user);
 
-      if(!empty($category_name) && !empty($category_description)) {
+    if ($result_user && mysqli_num_rows($result_user) > 0) {
 
-        $check_sql = "SELECT * FROM `category` WHERE name = '$category_name'";
-        $check_result = mysqli_query($conn, $check_sql);
+        $row_user = mysqli_fetch_assoc($result_user);
+        $view_id = $row_user['id'];
+        $view_name = $row_user['name'];
+        $view_last_name = $row_user['last_name'];
+        $view_email = $row_user['email'];
+        $view_role = $row_user['role'];
+        $view_status = $row_user['status'];
+        $view_created = $row_user['created_at'];
+        $view_updated = $row_user['updated_at'];
 
-        if ($check_result && mysqli_num_rows($check_result) == 0) { 
 
-          $sql = "INSERT INTO category (name, description, created_at) VALUES ('$category_name', '$category_description', NOW())";
-        
-          if (mysqli_query($conn, $sql)) {
-            $_SESSION['error_message'] = "Added successfully.";
-            header("Location: ../category.php");
-            exit();
-          } else {
-            $_SESSION['error_message'] = "Failed to add category.";
-            header("Location: ./category_add.php");
-            exit();
-          }
-
-        } else {
-          $_SESSION['error_message'] = "Category already exists.";
-          header("Location: ./category_add.php");
-          exit();
-      }
     } else {
-      $_SESSION['error_message'] = "All fields are required";
-      header("Location: ./category_add.php");
+      $_SESSION['error_message'] = "No user id found!.";
+      header("Location: ../user.php");
       exit();
-  }
-  mysqli_close($conn);
+    }
+} else {
+  $_SESSION['error_message'] = "No ID provided in the URL.";
+  header("Location: ../user.php");
+  exit();
 }
 
-if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -128,27 +121,27 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 </span>
                 <h4 class="text-section">Components</h4>
               </li>
-              <li class="nav-item ">
+              <li class="nav-item active">
                 <a href="../user.php">
                 <i class="fas fa-user"></i>
                   <p>Users</p>
                 </a>
               </li>
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../product.php">
                   <i class="fas fa-boxes"></i>
                   <p>Products</p>
                 </a>
               </li>
 
-              <li class="nav-item active">
+              <li class="nav-item">
                 <a href="../category.php">
                 <i class="fas fa-folder"></i>  
                   <p>Categories</p>
                 </a>
               </li>
              
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../orders.php">
                   <i class="fas fa-shopping-cart"></i>
                   <p>Orders</p>
@@ -162,13 +155,13 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 </a>
               </li>
 
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../discount.php">
                 <i class="fas fa-percentage"></i>
                   <p>Discounts</p>
                 </a>
               </li>
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../supplier.php">
                   <i class="fas fa-boxes"></i>
                   <p>Suppliers</p>
@@ -232,7 +225,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       />
                     </div>
                     <span class="profile-username">
-                    <span class="fw-bold"><?php print $_SESSION['name'] ?> <?php print $_SESSION['last_name'] ?></span>
+                      <span class="fw-bold">Admin</span>
                     </span>
                   </a>
                   <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -247,7 +240,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                             />
                           </div>
                           <div class="u-text">
-                          <span class="fw-bold"><?php print $_SESSION['name'] ?> <?php print $_SESSION['last_name'] ?></span>
+                            <h4>Admin</h4>
                             <p class="text-muted">sample@gmail.com</p>
                           
                           </div>
@@ -267,79 +260,93 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
         </div>
 
         <div class="container">
-          <div class="page-inner">
-          <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-              <div>
-                <h3 class="fw-bold mb-3">Add Category</h3>
-                <div class="page-header">
-                  <ul class="breadcrumbs mb-3">
-                    <li class="nav-home">
-                      <a href="#">
-                        <i class="icon-home"></i>
-                      </a>
-                    </li>
-                    <li class="separator">
-                      <i class="icon-arrow-right"></i>
-                    </li>
-                    <li class="nav-item">
-                      <a href="#">Category</a>
-                    </li>
-                    <li class="separator">
-                        <i class="icon-arrow-right"></i>
-                      </li>
-                      <li class="nav-item">
-                        <a href="#">Add Category</a>
-                      </li>
-                  </ul>
+  <div class="page-inner">
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pt-2 pb-4">
+      <div>
+        <h3 class="fw-bold mb-3">View user</h3>
+        <div class="page-header">
+          <ul class="breadcrumbs mb-3">
+            <li class="nav-home">
+              <a href="#"><i class="icon-home"></i></a>
+            </li>
+            <li class="separator"><i class="icon-arrow-right"></i></li>
+            <li class="nav-item">
+              <a href="#">user</a>
+            </li>
+            <li class="separator"><i class="icon-arrow-right"></i></li>
+            <li class="nav-item">
+              <a href="#">View user</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="card card-stats card-round">
+          <div class="card-body">
+            <p class="card-supplier fw-bold">User Information</p>
+
+            <div class="row g-3">
+              <div class="col-sm-12 col-md-6">
+                <div class="mb-4">
+                  <h4 class="card-title">Name</h4>
+                  <input type="text" class="form-control" placeholder="supplier name" value="<?php print $view_name; ?> <?php print $view_last_name; ?>" readonly>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-6">
+                <div class="mb-4">
+                  <h4 class="card-title">Email</h4>
+                  <input type="text" class="form-control" value="<?php print $view_email; ?>" readonly>
                 </div>
               </div>
             </div>
-            <form action="" method="post">
-                <?php
-                if (isset($_SESSION['error_message'])) {
-                    echo "<p>" . $_SESSION['error_message'] . "</p>";
-                    unset($_SESSION['error_message']); 
-                }
-                ?>
-              <div class="row">
-                <div class="col-sm-12 col-md-12">
-                  <div class="card card-stats card-round">
-                    <div class="card-body">
-                      <div class="row align-items-center">
-                          <p class="card-category">Category Information</p>
-                        <div class="col-sm-12 col-md-12 ms-3 ms-sm-0">
-                          <div class="numbers">
-                              <div class="mt-4">
-                                  <h4 class="card-title">Category Name</h4>
-                                  <input type="text" name="name" class="form-control" placeholder="Category name" required>
-                              </div>
-                          </div>
-                        </div>
-                        <div class="col-sm-12 col-md-12 ms-3 ms-sm-0">
-                          <div class="numbers">
-                              <div class="mt-4">
-                                  <h4 class="card-title">Category</h4>
-                                  <div class="form-floating">
-                                      <textarea class="form-control" name="description" placeholder="Category description" id="floatingTextarea2" style="height: 100px" required></textarea>
-                                      <label for="floatingTextarea2">Description</label>
-                                  </div>
-                              </div>
-                          </div>
-                        </div>
-                      </div>
-                  </div>
+
+            <div class="row g-3">
+              <div class="col-sm-12 col-md-6">
+                <div class="mb-4">
+                  <h4 class="card-title">Status</h4>
+                  <input type="text" class="form-control" value="<?php print $view_status; ?>" readonly>
+                </div>
               </div>
-              <div class="ms-md-auto py-2 py-md-0">
-                  <button type="submit" name="submit" class="btn btn-primary">
-                      <i class="fas fa-cart-plus"></i> Add Category
-                  </button>
-                  <a href="../category.php" class="btn btn-secondary ">Back</a>
+              <div class="col-sm-12 col-md-6">
+                <div class="mb-4">
+                <h4 class="card-title">Role</h4>
+                <input type="text" class="form-control" value="<?php print $view_role; ?>" readonly>
+                </div>
               </div>
-            </form>
             </div>
+
+
+            <div class="row g-3">
+              <div class="col-sm-12 col-md-6">
+                <div class="mb-4">
+                  <h4 class="card-title">Created</h4>
+                  <input type="datetime" class="form-control" value="<?php echo $view_created; ?>" readonly>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-6">
+                <div class="mb-4">
+                  <h4 class="card-title">Updated</h4>
+                  <input type="datetime" class="form-control" value="<?php echo $view_updated; ?>" readonly>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="text-start mt-3">
+      <a href="../user.php" class="btn btn-primary ">
+        <i class="fas fa-cart-plus"></i> Back to User
+      </a>
+    </div>
+  </div>
+</div>
+
 
         <footer class="footer">
           <div class="container-fluid d-flex justify-content-between">
@@ -395,7 +402,8 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 </html>
 <?php
 } else {
-    header("Location: index.php");
-    exit();
+  $_SESSION['error_message'] = "You have to login first.";
+  header("Location: ../index.php");
+  exit();
 }
 ?>

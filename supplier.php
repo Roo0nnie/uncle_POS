@@ -77,6 +77,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
           </div>
           <!-- End Logo Header -->
         </div>
+        
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
             <ul class="nav nav-secondary">
@@ -92,29 +93,51 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 </span>
                 <h4 class="text-section">Components</h4>
               </li>
+              <li class="nav-item ">
+                <a href="user.php">
+                <i class="fas fa-user"></i>
+                  <p>Users</p>
+                </a>
+              </li>
+
               <li class="nav-item">
                 <a href="product.php">
                   <i class="fas fa-boxes"></i>
-                  <p>Product</p>
+                  <p>Products</p>
+                </a>
+              </li> 
+
+              <li class="nav-item">
+                <a href="category.php">
+                  <i class="fas fa-folder"></i>  
+                  <p>Categories</p>
                 </a>
               </li>
              
-              <li class="nav-item">
-                <a href="category.php">
-                  <i class="fas fa-tags"></i>
-                  <p>Category</p>
-                </a>
-              </li>
               <li class="nav-item">
                 <a href="orders.php">
                   <i class="fas fa-shopping-cart"></i>
                   <p>Orders</p>
                 </a>
               </li>
+
+              <li class="nav-item ">
+                <a href="vat.php">
+                <i class="fas fa-file-invoice-dollar"></i>
+                  <p>Vats</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="discount.php">
+                <i class="fas fa-percentage"></i>
+                  <p>Discounts</p>
+                </a>
+              </li>
               <li class="nav-item active">
                 <a href="supplier.php">
                   <i class="fas fa-boxes"></i>
-                  <p>Supplier</p>
+                  <p>Suppliers</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -171,7 +194,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
           ?>
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
               <div>
-                <h3 class="fw-bold mb-3">Supplier List</h3>
+                <h3 class="fw-bold mb-3">Supplier Management</h3>
                 <div class="page-header">
                   <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
@@ -183,7 +206,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                      <a href="#">Supplier</a>
+                      <a href="#">Suppliers</a>
                     </li>
                   </ul>
                 </div>
@@ -233,7 +256,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               <div class="col-md-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4 class="card-title">Supplier</h4>
+                    <h4 class="card-title">Suppliers List</h4>
                   </div>
                   <div class="card-body">
                     <div class="table-responsive">

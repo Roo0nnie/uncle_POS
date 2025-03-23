@@ -77,6 +77,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
           </div>
           <!-- End Logo Header -->
         </div>
+        
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
             <ul class="nav nav-secondary">
@@ -92,7 +93,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 </span>
                 <h4 class="text-section">Components</h4>
               </li>
-              <li class="nav-item ">
+              <li class="nav-item active">
                 <a href="user.php">
                 <i class="fas fa-user"></i>
                   <p>Users</p>
@@ -105,7 +106,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 </a>
               </li>
 
-              <li class="nav-item active">
+              <li class="nav-item">
                 <a href="category.php">
                 <i class="fas fa-folder"></i>  
                   <p>Categories</p>
@@ -192,7 +193,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
           ?>
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
               <div>
-                <h3 class="fw-bold mb-3">Category Management</h3>
+                <h3 class="fw-bold mb-3">User Management</h3>
                 <div class="page-header">
                   <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
@@ -204,17 +205,17 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                      <a href="#">Category</a>
+                      <a href="#">User</a>
                     </li>
                   </ul>
                 </div>
               </div>
               <div class="ms-md-auto py-2 py-md-0">
-                <a href="./category/category_add.php" class="btn btn-primary "><i class="fas fa-cart-plus"></i> Add Category</a>
+                <a href="./user/user_add.php" class="btn btn-primary "><i class="fas fa-cart-plus"></i> Add User</a>
               </div>
             </div>
             <div class="row">
-              <div class="col-sm-12 col-md-6">
+              <div class="col-sm-6 col-md-6">
                 <div class="card card-stats card-round">
                   <div class="card-body">
                     <div class="row align-items-center">
@@ -222,24 +223,25 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                         <div
                           class="icon-big text-center icon-primary bubble-shadow-small"
                         >
-                          <i class="fas fa-list-alt"></i>
+                          <i class="fas fa-boxes"></i>
                         </div>
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Total Category</p>
+                          <p class="card-category">Total Users</p>
                           <h4 class="card-title">
                             <?php 
-                            $sql = "Select * from `category`";
-                            $result = $conn->query($sql);
+                              $sql = "SELECT COUNT(*) FROM user WHERE role != 'admin'";
+                              $result = mysqli_query($conn, $sql);
+                              $row = mysqli_fetch_array($result);
 
-                            if($result) {
-                              $count = $result->num_rows;
-                              echo $count;
-                            } else {
-                              echo 'No added Categories';
-                            }
-                            ?>
+                              if ($row[0] != NULL) {
+                                echo $row[0];
+                              }
+                              else {
+                                echo "No user available";
+                              }
+                           ?>
                           </h4>
                         </div>
                       </div>
@@ -247,94 +249,61 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   </div>
                 </div>
               </div>
-              <div class="col-sm-12 col-md-6">
-                <div class="card card-stats card-round">
-                  <div class="card-body">
-                    <div class="row align-items-center">
-                      <div class="col-icon">
-                        <div
-                          class="icon-big text-center icon-info bubble-shadow-small"
-                        >
-                          <i class="fas fa-plus-square"></i>
-                        </div>
-                      </div>
-                      <div class="col col-stats ms-3 ms-sm-0">
-                        <div class="numbers">
-                          <p class="card-category">Recently Added Category</p>
-                          <h4 class="card-title"><?php 
-                            $sql = "SELECT COUNT(*) AS recent_count FROM `category` WHERE DATE(created_at) = CURDATE()";
-                            $result = $conn->query($sql);
-
-                            if ($result) {
-                                $row = $result->fetch_assoc(); 
-                                $recent_count = $row['recent_count'];
-                                echo $recent_count;
-                            } else {
-                                echo 'No added Categories today';
-                            }
-                            ?></h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
             </div>
+            
             <div class="row">
               <div class="col-md-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4 class="card-title">Supplies</h4>
+                    <h4 class="card-title">User List</h4>
                   </div>
                   <div class="card-body">
                     <div class="table-responsive">
-                    <table id="multi-filter-select" class="display table table-striped table-hover">
-                    <thead>
-                        <tr>
+                      <table id="multi-filter-select" class="display table table-striped table-hover">
+                      <thead>
+                          <tr>
                             <th>#</th>
-                            <th>Category</th>
-                            <th>Description</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
                             <th>Action</th>
-                        </tr>
-                    </thead>
-                          <tfoot>
-                              <tr>
-                                  <th>#</th>
-                                  <th>Category</th>
-                                  <th>Description</th>
-                                  <th>Action</th>
-                              </tr>
-                          </tfoot>
-                          <tbody>
-                          <?php
+                          </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                            $sql = "Select * from `user` WHERE role != 'admin'";
 
-                          $sql = "Select * from `category`";
+                            $result = mysqli_query($conn, $sql);
+                            $id_loop = 0;
+                            if ($result) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    $id = $row['id'];
+                                    $name = $row['name'];
+                                    $last_name = $row['last_name'];
+                                    $email = $row['email'];
+                                    $role = $row['role'];
+                                    $status = $row['status'];
+                                    $id_loop += 1;
 
-                          $result = mysqli_query($conn, $sql);
-                          $id_loop = 0;
-                          if ($result) {
-                              while ($row = mysqli_fetch_assoc($result)) {
-                                  $id = $row['id'];
-                                  $cat_name = $row['name'];
-                                  $cat_description = $row['description'];
-                                  $id_loop += 1;
-                                  echo '<tr>
-                                  <th scope="row" >' . $id_loop . '</th>
-                                  <td>' . substr($cat_name, 0, 50) . (strlen($cat_name) > 50 ? '...' : '') . '</td>
-                                  <td>' . substr($cat_description, 0, 15) . (strlen($cat_description) > 15 ? '...' : '') . '</td>
-                                  <td>
-                                      <a href="./category/category_view.php?id='. $id .'" class="btn btn-info btn-sm">View</a>
-                                      <a href="./category/delete.php?id=' . $id . '" class="btn btn-danger btn-sm">Delete</a>
-                                      <a href="./category/category_edit.php?id='. $id .'" class="btn btn-warning btn-sm">Edit</a>
-                                  </td>
-                              </tr>';
-                          ?>
-                          <?php
-                              }
-                          }
-                          ?>
-                          </tbody>
+                                    echo '<tr>
+                                    <td>' . $id_loop . '</td>
+                                    <td>'. $name .' '. $last_name .'</td>
+                                    <td>'. $email .'</td>
+                                    <td>'. $role .'</td>
+                                    <td>'. $status .'</td>
+                                    <td>
+                                        <a href="./user/user_view.php?id='. $id .'" class="btn btn-info btn-sm">View</a>
+                                        <a href="./user/delete.php?id=' . $id . '" class="btn btn-danger btn-sm">Delete</a>
+                                        <a href="./user/user_edit.php?id='. $id .'" class="btn btn-warning btn-sm">Edit</a>
+                                    </td>
+                                </tr>';
+                            ?>
+                            <?php
+                                }
+                            }
+                            ?>  
+                        </tbody>
                       </table>
                     </div>
                   </div>
@@ -400,7 +369,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
           pageLength: 5,
           initComplete: function () {
             this.api()
-              .columns([1])
+              .columns([0, 1, 2, 3, 4, 5, 6, 7])
               .every(function () {
                 var column = this;
                 var select = $(
@@ -430,6 +399,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
     </script>
   </body>
 </html>
+
 <?php
 } else {
     header("Location: index.php");
