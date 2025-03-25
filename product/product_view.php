@@ -18,9 +18,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
         $view_orig_price = $row_product['orig_price'];
         $view_vat_price = $row_product['vat_percent'];
         $view_price = $row_product['prod_price'];
-        $view_supplier = $row_product['supplier_id'];
         $view_category = $row_product['prod_category'];
-        $view_received = $row_product['prod_receivedDate'];
         $view_expiry = $row_product['prod_expiry'];
         $view_created = $row_product['created_at'];
         $view_updated = $row_product['updated_at'];
@@ -31,14 +29,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
              $row_category = mysqli_fetch_assoc($result_category);
          } else {
              $row_category = ['name' => '']; 
-         }
- 
-         $sql_supplier = "SELECT * FROM `supplier` WHERE id = $view_supplier";
-         $result_supplier = mysqli_query($conn, $sql_supplier);
-         if ($result_supplier && mysqli_num_rows($result_supplier) > 0) {
-             $row_supplier = mysqli_fetch_assoc($result_supplier);
-         } else {
-             $row_supplier = ['sup_name' => '']; 
          }
 
     } else {
@@ -329,23 +319,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   <input type="number" class="form-control" value="<?php print $view_quantity; ?>" readonly>
                 </div>
               </div>
-              <div class="col-sm-12 col-md-6">
-                <div class="mb-4">
-                  <h4 class="card-title">Received Date</h4>
-                  <input type="date" class="form-control" value="<?php print $view_received; ?>" readonly>
-                </div>
-              </div>
-            </div>
 
-            <div class="row g-3">
-              <div class="col-sm-12 col-md-6">
-                <div class="mb-4">
-                  <h4 class="card-title">Supplier</h4>
-                  <input type="text" class="form-control" value="<?php echo isset($row_supplier['sup_name']) ? $row_supplier['sup_name'] : ''; ?>" readonly>
-
-                </div>
-              </div>
-            </div>
 
             <div class="row g-3">
               <div class="col-sm-12 col-md-6">
@@ -364,7 +338,12 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               <div class="col-sm-12 col-md-6">
                 <div class="mb-4">
                   <h4 class="card-title">Expiry Date</h4>
-                  <input type="date" class="form-control" value="<?php print $view_expiry; ?>" readonly>
+
+                  <?php if ($view_expiry == 1) { ?>
+                    <input type="text" class="form-control" value="Yes" readonly>
+                  <?php } else { ?>
+                    <input type="text" class="form-control" value="No" readonly>
+                  <?php } ?>
                 </div>
               </div>
             </div>

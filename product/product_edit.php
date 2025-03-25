@@ -18,10 +18,9 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
         $edit_orig_price = $row_product['orig_price'];
         $edit_vat_price = $row_product['vat_percent'];
         $edit_price = $row_product['prod_price'];
+        $edit_unit = $row_product['unit'];
         $edit_category = $row_product['prod_category'];
-        $edit_received = $row_product['prod_receivedDate'];
         $edit_expiry = $row_product['prod_expiry'];
-        $edit_supplier_id = $row_product['supplier_id'];
         $edit_created = $row_product['created_at'];
         $edit_updated = $row_product['updated_at'];
 
@@ -31,14 +30,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
              $row_category = mysqli_fetch_assoc($result_category);
          } else {
              $row_category = ['name' => '']; 
-         }
- 
-         $sql_supplier = "SELECT * FROM `supplier` WHERE id = $edit_supplier_id";
-         $result_supplier = mysqli_query($conn, $sql_supplier);
-         if ($result_supplier && mysqli_num_rows($result_supplier) > 0) {
-             $row_supplier = mysqli_fetch_assoc($result_supplier);
-         } else {
-             $row_supplier = ['sup_name' => '']; 
          }
 
 
@@ -63,9 +54,14 @@ if(isset($_POST['submit'])){
     $prod_vat_price = mysqli_real_escape_string($conn, trim($_POST['vat_price']));
     $prod_price = mysqli_real_escape_string($conn, trim($_POST['price']));
     $prod_category = mysqli_real_escape_string($conn, trim($_POST['category']));
-    $prod_supplier = mysqli_real_escape_string($conn, trim($_POST['supplier']));
-    $prod_supplier = isset($_POST['supplier']) && !empty($_POST['supplier']) ? mysqli_real_escape_string($conn, trim($_POST['supplier'])) : 0;
-    $prod_expiry = isset($_POST['expiry']) && !empty($_POST['expiry']) ? mysqli_real_escape_string($conn, trim($_POST['expiry'])) : null;
+    $prod_unit = mysqli_real_escape_string($conn, trim($_POST['unit']));
+    $prod_expiry = isset($_POST['expiry']) && !empty($_POST['expiry']) ? mysqli_real_escape_string($conn, trim($_POST['expiry'])) : 0;
+
+  if(empty($prod_name) && !empty($prod_unit) && !empty($prod_quantity) && !empty($prod_price) && !empty($prod_category) && $prod_category != 0) {
+    $_SESSION['error_message'] = "All fields are required.";
+    header("Location: ./product_edit.php?id=$prod_id");
+    exit();
+  }
 
     $sql_product = "UPDATE product SET 
     prod_name = '$prod_name',
@@ -73,17 +69,17 @@ if(isset($_POST['submit'])){
     orig_price = '$prod_orig_price',
     vat_percent = '$prod_vat_price',
     prod_price = '$prod_price',
-    supplier_id = '$prod_supplier',
     prod_category = '$prod_category', ";
 
-    if ($prod_expiry === null) {
-        $sql_product .= "prod_expiry = NULL, ";
+    if ($prod_expiry === 0) {
+        $sql_product .= "prod_expiry = 0, ";
     } else {
         $sql_product .= "prod_expiry = '$prod_expiry', ";
     }
 
-    $sql_product .= "updated_at = now()
-        WHERE id = '$prod_id'";
+    $sql_product .= "updated_at = now()";
+
+    $sql_product .= " WHERE id = '$prod_id'";
 
   if(mysqli_query($conn, $sql_product)){
     $_SESSION['error_message'] = "Updated product successfully!.";
@@ -390,51 +386,54 @@ if(isset($_POST['submit'])){
                         </div>
                         <div class="col-sm-12 col-md-6">
                           <div class="mb-4">
-                            <h4 class="card-title">Received Date</h4>
-                            <input type="date" class="form-control" value="<?php print $edit_received; ?>" readonly>
+                            <h4 class="card-title">Expiry Date</h4>
+                            <select name="expiry" class="form-control">
+                              <option value="0" <?php if($edit_expiry == 0) echo 'selected'; ?>>No</option>
+                              <option value="1" <?php if($edit_expiry == 1) echo 'selected'; ?>>Yes</option>
+                            </select>
                           </div>
                         </div>
                       </div>
 
-                      <div class="row g-3">
-                        <div class="col-sm-12 col-md-6">
-                          <div class="mb-4">
-
-                          <h4 class="card-title">Original Price</h4>
+                      <div class="row align-items-center">
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                              <h4 class="card-title">Original Price</h4>
                               <input type="number" name="orig_price" class="form-control" value="<?php print $edit_orig_price; ?>">
-
-                              <h4 class="card-title mt-2">Vat (%)</h4>
-                              <input type="number" name="vat_price" class="form-control" value="<?php print $edit_vat_price; ?>">
-
-                              <h4 class="card-title mt-2">Selling Price</h4>
-                              <input type="number" class="form-control" name="price" value="<?php print $edit_price; ?>" readonly>
+                              </div>
                           </div>
                         </div>
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                              <h4 class="card-title mt-2">VAT</h4>
+                              <select name="vat_price" class="form-control">
+    <?php 
+        $sql = "SELECT * FROM `vat`";
+        $result = mysqli_query($conn, $sql);
 
-                        <div class="col-sm-12 col-md-6">
-                          <div class="mb-4">
-                            <h4 class="card-title">Suppplier</h4>
-                              <select name="supplier" class="form-control">
-                                <?php 
-                                  $sql = "SELECT * FROM  `supplier`";
-                                  $result = mysqli_query($conn, $sql);
-                                  echo "<option value='". $edit_supplier. "'>". $row_supplier['sup_name']. "</option>";
-                                  while ($row = mysqli_fetch_assoc($result)) {
-                                    if($edit_supplier != $row['id']) {
-                                      echo "<option value='". $row['id']. "'>". $row['sup_name']. "</option>";
-                                    }
-                                    
-                                  }
-                                ?>
-                              </select>
+        while ($row = mysqli_fetch_assoc($result)) {
+            $selected = ($edit_vat_price == $row['vat']) ? "selected" : "";
+            echo "<option value='". $row['vat']. "' $selected>". $row['vat']. "%</option>";
+        }
+    ?>
+</select>
+                              </div>
                           </div>
                         </div>
-
-                        
                       </div>
-                      
 
-                     
+                      <div class="row align-items-center">
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                              <h4 class="card-title mt-2">Selling Price</h4>
+                              <input type="number" name="price" class="form-control" value="<?php print $edit_price; ?>" readonly>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
 
                       <div class="row g-3">
                         <div class="col-sm-12 col-md-6">
@@ -519,7 +518,6 @@ if(isset($_POST['submit'])){
     <script src="../assets/js/admin.min.js"></script>
 
     <script src="../assets/js/setting-demo.js"></script>
-    <script src="../assets/js/demo.js"></script>
     <script src="../assets/js/product.js"></script>
   </body>
 </html>

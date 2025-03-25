@@ -10,22 +10,18 @@ session_start();
     $prod_orig_price = mysqli_real_escape_string($conn, trim($_POST['orig_price']));
     $prod_vat_price = mysqli_real_escape_string($conn, trim($_POST['vat_price']));
     $prod_category = mysqli_real_escape_string($conn, trim($_POST['category']));
-    $prod_receiveDate = mysqli_real_escape_string($conn, trim($_POST['received']));
     $prod_expiry = mysqli_real_escape_string($conn, trim($_POST['expiry']));
-    $prod_supplier = mysqli_real_escape_string($conn, trim($_POST['supplier']));
     $prod_unit = mysqli_real_escape_string($conn, trim($_POST['unit']));
-    $prod_supplier = isset($_POST['supplier']) && !empty($_POST['supplier']) ? mysqli_real_escape_string($conn, trim($_POST['supplier'])) : 0;
-    $prod_expiry = isset($_POST['expiry']) && !empty($_POST['expiry']) ? mysqli_real_escape_string($conn, trim($_POST['expiry'])) : null;
 
-      if(!empty($prod_name) && !empty($prod_unit) && !empty($prod_quantity) && !empty($prod_price) && !empty($prod_category) && !empty($prod_receiveDate) && $prod_category != 0) {
+    if(!empty($prod_name) && !empty($prod_unit) && !empty($prod_quantity) && !empty($prod_price) && !empty($prod_category) && $prod_category != 0) {
 
         $check_sql = "SELECT * FROM `product` WHERE prod_name = '$prod_name'";
         $check_result = mysqli_query($conn, $check_sql);
 
         if ($check_result && mysqli_num_rows($check_result) == 0) { 
 
-          $sql = "INSERT INTO product (unit, prod_name, prod_quantity, prod_price, prod_category, prod_receivedDate, prod_expiry,orig_price, vat_percent, supplier_id,  created_at) 
-          VALUES ('$prod_unit','$prod_name', '$prod_quantity', '$prod_price', '$prod_category', '$prod_receiveDate', ".($prod_expiry === null ? "NULL" : "'$prod_expiry'")." , '$prod_orig_price'  , '$prod_vat_price',".($prod_supplier === null ? "NULL" : "'$prod_supplier'")." ,    NOW())";
+          $sql = "INSERT INTO product (unit, prod_name, prod_quantity, prod_price, prod_category, prod_expiry,orig_price, vat_percent,  created_at) 
+          VALUES ('$prod_unit','$prod_name', '$prod_quantity', '$prod_price', '$prod_category', ".($prod_expiry === null ? "0" : "1")." , '$prod_orig_price'  , '$prod_vat_price' ,    NOW())";
          
           if (mysqli_query($conn, $sql)) {
             $_SESSION['error_message'] = "Product added successfully.";
@@ -343,35 +339,8 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                               </div>
                           </div>
                         </div>
-
-                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
-                          <div class="numbers">
-                              <div class="mt-4">
-                                  <h4 class="card-title">Supplier</h4>
-                                  <select name="supplier" class="form-control">
-                                    <?php 
-                                      $sql = "SELECT * FROM  `supplier`";
-                                      $result = mysqli_query($conn, $sql);
-                                     echo "<option value='0'>Select Supplier</option>";
-                                      while ($row = mysqli_fetch_assoc($result)) {
-                                        echo "<option value='". $row['id']. "'>". $row['sup_name']. "</option>";
-                                     }
-                                    ?>
-                                  </select>
-                              </div>
-                          </div>
-                        </div>
-
-                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
-                          <div class="numbers">
-                              <div class="mt-4">
-                                <h4 class="card-title">Expiry Date</h4>
-                                <input type="date" name="expiry" class="form-control">
-                              </div>
-                          </div>
-                        </div>
-
                       </div>
+
 
                       <div class="row align-items-center">
                           <div class="col-sm-12 col-md-6">
@@ -395,36 +364,64 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                 </div>
                             </div>  
                             </div>
+                            
                           </div>
+
                           <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
-                            <div class="numbers">
+                          <div class="numbers">
                               <div class="mt-4">
-                                  <h4 class="card-title">Received Date</h4>
-                                  <input type="date" name="received" class="form-control" id="receivedDate">
+                                  <h4 class="card-title">Expiry Date</h4>
+                                  <input type="radio" id="expiry-yes" name="expiry" value="1" class="form-check-input">
+                                  <label for="expiry-yes">Yes</label>
+                                  <input type="radio" id="expiry-no" name="expiry" value="0" class="form-check-input">
+                                  <label for="expiry-no">No</label>
                               </div>
-                                
-                            </div>
                           </div>
+                        </div>
                         </div>
 
                         <div class="row align-items-center">
-                          <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
-                            <div class="numbers">
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
                               <div class="mt-4">
-
                               <h4 class="card-title">Original Price</h4>
                               <input type="number" name="orig_price" class="form-control" value="0">
+                              </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                              <h4 class="card-title mt-2">VAT</h4>
+                                <select name="vat_price" class="form-control">
+                                    <option value="0">0%</option>
+                                    <?php 
+                                        $sql = "SELECT * FROM `vat`";
+                                        $result = mysqli_query($conn, $sql);
+                                        while ($row = mysqli_fetch_assoc($result)) {
+                                            echo "<option value='". $row['vat']. "'>". $row['vat']. "%</option>";
+                                        }
+                                    ?>
+                                </select>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
 
-                              <h4 class="card-title mt-2">Vat (%)</h4>
-                              <input type="number" name="vat_price" class="form-control" value="0">
-
+                      <div class="row align-items-center">
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
                               <h4 class="card-title mt-2">Selling Price</h4>
                               <input type="number" name="price" class="form-control" value="0" readonly>
                               </div>
-
-                            </div>
                           </div>
                         </div>
+                      </div>
+
+
+                      <!--  -->
+                      </div>
                     </div>
                   </div>
                     <div class="ms-md-auto py-2 py-md-0">

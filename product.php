@@ -303,7 +303,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                             <th>Selling </th>
                             <th>Original </th>
                             <th>Vat(%)</th>
-                            <th>Expiry </th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -315,7 +314,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                             <th>Selling </th>
                             <th>Original </th>
                             <th>Vat(%)</th>
-                            <th>Expiry Date</th>
                           </tr>
                         </tfoot>
                         <tbody>
@@ -333,7 +331,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                     $prod_price = $row['prod_price'];
                                     $prod_orig_price = $row['orig_price'];
                                     $prod_vat_price = $row['vat_percent'];
-                                    $prod_expiry = $row['prod_expiry'];
                                     $id_loop += 1;
 
                                     $sql_category = "SELECT * FROM `category` WHERE id = $prod_category";
@@ -347,7 +344,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                     <td>'.'$ '. $prod_price .'</td>
                                       <td>'.'$ '. $prod_orig_price .'</td>
                                         <td>'. $prod_vat_price .'%'.'</td>
-                                    <td>'. $prod_expiry .'</td>
                                     <td>
                                         <a href="./product/product_view.php?id='. $id .'" class="btn btn-info btn-sm">View</a>
                                         <a href="./product/delete.php?id=' . $id . '" class="btn btn-danger btn-sm">Delete</a>
