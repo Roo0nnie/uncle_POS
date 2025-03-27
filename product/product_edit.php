@@ -409,16 +409,16 @@ if(isset($_POST['submit'])){
                               <div class="mt-4">
                               <h4 class="card-title mt-2">VAT</h4>
                               <select name="vat_price" class="form-control">
-    <?php 
-        $sql = "SELECT * FROM `vat`";
-        $result = mysqli_query($conn, $sql);
+                                <?php 
+                                    $sql = "SELECT * FROM `vat`";
+                                    $result = mysqli_query($conn, $sql);
 
-        while ($row = mysqli_fetch_assoc($result)) {
-            $selected = ($edit_vat_price == $row['vat']) ? "selected" : "";
-            echo "<option value='". $row['vat']. "' $selected>". $row['vat']. "%</option>";
-        }
-    ?>
-</select>
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        $selected = ($edit_vat_price == $row['vat']) ? "selected" : "";
+                                        echo "<option value='". $row['vat']. "' $selected>". $row['vat']. "%</option>";
+                                    }
+                                ?>
+                            </select>
                               </div>
                           </div>
                         </div>

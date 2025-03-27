@@ -1,3 +1,24 @@
+// Calculate total cost with discount
+function calculateTotalCost() {
+  let totalCost = 0;
+  for (const id in orderItems) {
+    totalCost += parseFloat(orderItems[id].total);
+  }
+  const discountValue = parseFloat(document.getElementById("discountInput").value) || 0;
+  let totalCostElement = document.getElementById("total-cost");
+  if (totalCostElement) {
+    totalCostElement.value = (totalCost - (totalCost * (discountValue / 100))).toFixed(2);
+  }
+}
+ 
+ 
+ // Discount
+ function updateDiscount() {
+  let discount = document.getElementById("discountSelect").value;
+  document.getElementById("discountInput").value = discount;
+  calculateTotalCost();
+}
+
 // Add order item
 function updateStockAndTotal(inputElement, price) {
   let quantity = parseInt(inputElement.value);
@@ -7,6 +28,8 @@ function updateStockAndTotal(inputElement, price) {
   }
 
   let totalCost = 0;
+  const discount = document.getElementById("discountInput");
+  const discountValue = parseFloat(discount.value) || 0;
 
   let allQuantities = document.querySelectorAll(".quantity-input");
   allQuantities.forEach(function (input) {
@@ -21,9 +44,11 @@ function updateStockAndTotal(inputElement, price) {
     }
   });
 
+  console.log(totalCost);
+
   let totalCostElement = document.getElementById("total-cost");
   if (totalCostElement) {
-    totalCostElement.value = totalCost.toFixed(2);
+    totalCostElement.value = (totalCost - (totalCost * (discountValue / 100))).toFixed(2);
   } else {
     console.error("Total cost element not found.");
   }
@@ -289,3 +314,5 @@ function filterProducts(event) {
     noResultsMsg.remove();
   }
 }
+
+

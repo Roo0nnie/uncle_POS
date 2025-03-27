@@ -10,6 +10,7 @@ session_start();
     $order_name = mysqli_real_escape_string($conn, trim($_POST['f_name']));
     $order_payMethod = mysqli_real_escape_string($conn, trim($_POST['pay_method']));
     $order_payment = mysqli_real_escape_string($conn, trim($_POST['total_payment']));
+    $order_discount = mysqli_real_escape_string($conn, trim($_POST['discount']));
    
 
     $check_sql = "SELECT * FROM `customer` WHERE trans_id = '$order_transID'";
@@ -17,8 +18,8 @@ session_start();
 
     if ($check_result && mysqli_num_rows($check_result) == 0) { 
        if($order_totalCost > 0) {
-        $sql = "INSERT INTO customer (cus_payment,firstname, date, pay_method, total_price, status, created_at, trans_id)  
-        VALUES ('$order_payment','$order_name', '$order_date','$order_payMethod', '$order_totalCost', 'Done', NOW(), '$order_transID')";
+        $sql = "INSERT INTO customer (cus_payment,firstname, date, pay_method, total_price, status, created_at, trans_id, discount)  
+        VALUES ('$order_payment','$order_name', '$order_date','$order_payMethod', '$order_totalCost', 'Done', NOW(), '$order_transID', '$order_discount')";
 
         if (mysqli_query($conn, $sql)) {
             $order_id = mysqli_insert_id($conn);
@@ -265,36 +266,129 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               <div class="row">
                 <!-- Product List -->
                 <div class="col-8">
-                  <div class="card-body">
-                    <div>
-                      <div class="tab-buttons d-flex gap-3">
-                        <button class="tab-button btn active card card-black" onclick="showTab('veges')">Vegetables</button>
-                        <button class="tab-button btn card" onclick="showTab('fruits')">Fruits</button>
-                        <button class="tab-button btn card" onclick="showTab('meat')">Meat</button>
-                        <button class="tab-button btn card" onclick="showTab('drinks')">Drinks</button>
-                        <button class="tab-button btn card" onclick="showTab('milk')">Milk</button>
-                      </div>
-                    </div>
+                <?php
+                  $sql = "SELECT p.*, c.id AS category_id, c.name AS category_name 
+                          FROM product p 
+                          JOIN category c ON p.prod_category = c.id 
+                          ORDER BY c.name, p.prod_name";
+                  $result = mysqli_query($conn, $sql);
 
-                    <div id="veges" class="tab-content active">
-                      <?php include './product/vege.php'?>
-                    </div>
+                  function slugify($text) {
+                      $text = preg_replace('~[^\pL\d]+~u', '-', $text);
+                      $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+                      $text = preg_replace('~[^-\w]+~', '', $text);
+                      $text = trim($text, '-');
+                      $text = preg_replace('~-+~', '-', $text);
+                      $text = strtolower($text);
+                      return empty($text) ? 'n-a' : $text;
+                  }
 
-                    <div id="fruits" class="tab-content">
-                      <?php include './product/fruit.php'?>
-                    </div>
+                  // Group products by category
+                  $products_by_category = [];
+                  if ($result) {
+                      while ($row = mysqli_fetch_assoc($result)) {
+                          $category_slug = slugify($row['category_name']);
+                          if (!isset($products_by_category[$category_slug])) {
+                              $products_by_category[$category_slug] = [
+                                  'name' => $row['category_name'],
+                                  'products' => []
+                              ];
+                          }
+                          $products_by_category[$category_slug]['products'][] = $row;
+                      }
+                  }
+                  ?>
 
-                    <div id="meat" class="tab-content">
-                      <?php include './product/meat.php'?>
-                    </div>
+                  <div class="row">
+                      <form action="" method="post">
+                          <div class="row">
+                              <!-- Product List -->
+                              <div class="col-12">
+                                  <div class="card-body">
+                                      <!-- Tab Buttons -->
+                                      <div class="tab-buttons d-flex gap-3">
+                                          <?php
+                                          $first = true;
+                                          foreach ($products_by_category as $slug => $category_data) {
+                                              $active_class = $first ? 'active card card-black' : '';
+                                              echo '<button class="tab-button btn card ' . $active_class . '" onclick="showTab(\'' . $slug . '\')">' . htmlspecialchars($category_data['name']) . '</button>';
+                                              $first = false;
+                                          }
+                                          ?>
+                                      </div>
 
-                    <div id="drinks" class="tab-content">
-                      <?php include './product/drink.php'?>
-                    </div>
+                                      <!-- Tab Contents -->
+                                      <?php
+                                      $first = true;
+                                      foreach ($products_by_category as $slug => $category_data) {
+                                          $active_class = $first ? 'active' : '';
+                                          ?>
+                                          <div id="<?php echo $slug; ?>" class="tab-content <?php echo $active_class; ?>">
+                                              <div class="mt-4">
+                                                  <h5 class="card-title mt-5 mb-3"><?php echo htmlspecialchars($category_data['name']); ?> Products</h5>
+                                              </div>
 
-                    <div id="milk" class="tab-content">
-                      <?php include './product/milk.php'?>
-                    </div>
+                                              <!-- Search bar -->
+                                              <div class="row mb-4">
+                                                  <div class="col-md-6">
+                                                      <div class="input-group">
+                                                          <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                                          <input type="text" id="searchInput<?php echo $slug; ?>" class="form-control search-input" placeholder="Search by name...">
+                                                      </div>
+                                                  </div>
+                                              </div>
+
+                                              <!-- Product list -->
+                                              <div id="order-container">
+                                                  <div class="row">
+                                                      <?php
+                                                      foreach ($category_data['products'] as $product) {
+                                                          $id = $product['id'];
+                                                          $prod_name = htmlspecialchars($product['prod_name'], ENT_QUOTES, 'UTF-8');
+                                                          $prod_quantity = $product['prod_quantity'];
+                                                          $prod_price = number_format($product['prod_price'], 2);
+                                                          $prod_unit = $product['unit'];
+                                                          ?>
+                                                          <div class="col-lg-4 col-sm-12 col-md-6 product-card" 
+                                                              data-name="<?php echo strtolower($prod_name); ?>" 
+                                                              data-price="<?php echo $prod_price; ?>">
+                                                              <div class="card flex-grow-1">
+                                                                  <div class="card-body">
+                                                                      <h4 class="text-center"><?php echo $prod_name; ?></h4>
+                                                                      <div class="col-12 mt-3">
+                                                                          <div class="d-flex justify-content-between align-items-center">
+                                                                              <p class="card-title mb-0"> $<?php echo $prod_price; ?>/<span style="font-size:12px;"><?php echo $prod_unit; ?></span></p>
+                                                                              <p class="card-title mb-0"> <span style="font-size:12px;">Stocks:</span> <?php echo $prod_quantity; ?> <span style="font-size:10px;"><?php echo $prod_unit; ?></span></p>
+                                                                          </div>
+                                                                          <div class="input-group mt-3">
+                                                                              <button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity(this, <?php echo $prod_quantity; ?>, <?php echo $prod_price; ?>)">-</button>
+                                                                              <input type="number" name="products[<?php echo $id; ?>][quantity]" class="form-control text-center quantity-input" value="0" min="0" max="<?php echo $prod_quantity; ?>" data-price="<?php echo $prod_price; ?>" readonly>
+                                                                              <button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity(this, <?php echo $prod_quantity; ?>, <?php echo $prod_price; ?>)">+</button>
+                                                                          </div>
+                                                                          <input type="hidden" name="products[<?php echo $id; ?>][id]" value="<?php echo $id; ?>">
+                                                                          <input type="hidden" name="products[<?php echo $id; ?>][price]" value="<?php echo $prod_price; ?>">
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                          <?php
+                                                      }
+                                                      ?>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <?php
+                                          $first = false;
+                                      }
+                                      if (empty($products_by_category)) {
+                                          echo '<div><p>No products found.</p></div>';
+                                      }
+                                      ?>
+                                  </div>
+                              </div>
+                              <!-- End Product List -->
+                          </div>
+                      </form>
                   </div>
                 </div>
                 <!-- End Product List -->
@@ -331,6 +425,30 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                           <input type="text" name="f_name" class="form-control mb-2" placeholder="eg. John Doe" required>
                         </div>
 
+
+                        <div class="mt-4">
+
+                            <div class="d-flex gap-5">
+                                <div class=" w-75">
+                                <label for="">Discount</label>
+                                    <select name="vat_price" class="form-control" id="discountSelect" onchange="updateDiscount()">
+                                        <option value="0">Ordinary</option>
+                                        <?php 
+                                            $sql = "SELECT * FROM discount";
+                                            $result = mysqli_query($conn, $sql);
+                                            while ($row = mysqli_fetch_assoc($result)) {
+                                                echo "<option value='". htmlspecialchars($row['discount'], ENT_QUOTES, 'UTF-8') ."'>". htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8') ."</option>";
+                                            }
+                                        ?>
+                                    </select>
+                                </div>
+                                <div>
+                                <label for="">By Percent (%)</label>
+                                    <input type="number" name="discount" id="discountInput" class="form-control mb-2" placeholder="eg. 10" value="0" readonly required>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="mt-2">
                           <label for="">Payment Method</label>
                           <select name="pay_method" class="form-control">
@@ -353,7 +471,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 
                         <div class="mt-3">
                           <label for="">Your Payment</label>
-                          <input type="number" id="total-payment" name="total_payment" class="form-control" placeholder="0.00" step="0.01" required>
+                          <input type="number" id="total-payment" name="total_payment" class="form-control"  placeholder="0.00" step="0.01" required>
                         </div>
                         
 
@@ -424,8 +542,8 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
     <script src="../assets/js/admin.min.js"></script>
 
     <script src="../assets/js/setting-demo.js"></script>
-    <script src="../assets/js/demo.js"></script>
-    <script src="../assets/js/menu.js"></script>
+    <script src="../assets/js/demo.js?v=<?= time(); ?>"></script>
+    <script src="../assets/js/menu.js?v=<?= time(); ?>"></script>
 
   </body>
 </html>
