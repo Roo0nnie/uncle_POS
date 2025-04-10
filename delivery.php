@@ -99,9 +99,9 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 </a>
               </li>
               <li class="nav-item active">
-                <a href="product.php">
-                  <i class="fas fa-boxes"></i>
-                  <p>Products</p>
+                <a href="delivery.php">
+                  <i class="fas fa-truck"></i>
+                  <p>Delivery</p>
                 </a>
               </li>
 
@@ -192,7 +192,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
           ?>
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
               <div>
-                <h3 class="fw-bold mb-3">Product Management</h3>
+                <h3 class="fw-bold mb-3">Delivery Management</h3>
                 <div class="page-header">
                   <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
@@ -204,13 +204,13 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                      <a href="#">Product</a>
+                      <a href="#">Delivery</a>
                     </li>
                   </ul>
                 </div>
               </div>
               <div class="ms-md-auto py-2 py-md-0">
-                <a href="./product/product_add.php" class="btn btn-primary "><i class="fas fa-cart-plus"></i> Add Product</a>
+                <a href="./delivery/delivery_add.php" class="btn btn-primary "><i class="fas fa-cart-plus"></i> Add Delivery</a>
               </div>
             </div>
             <div class="row">
@@ -227,10 +227,10 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Total Products</p>
+                          <p class="card-category">Total Delivery</p>
                           <h4 class="card-title">
                             <?php 
-                              $sql = "SELECT COUNT(*) FROM product";
+                              $sql = "SELECT COUNT(*) FROM delivery";
                               $result = mysqli_query($conn, $sql);
                               $row = mysqli_fetch_array($result);
 
@@ -238,7 +238,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                 echo $row[0];
                               }
                               else {
-                                echo "No product available";
+                                echo "No delivery available";
                               }
                            ?>
                           </h4>
@@ -261,19 +261,10 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Total Quantity of product</p>
+                          <p class="card-category">Total Quantity of Delivery</p>
                           <h4 class="card-title">
                             <?php
-                            $sql = "SELECT SUM(prod_quantity) FROM product";
-                            $result = mysqli_query($conn, $sql);
-                            $row = mysqli_fetch_array($result);
-
-                            if ($row[0] != NULL) {
-                              echo $row[0];
-                            }
-                            else {
-                              echo "No data available";
-                            }
+                            
                             
                             ?>
 
@@ -290,64 +281,50 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               <div class="col-md-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4 class="card-title">Product List</h4>
+                    <h4 class="card-title">Delivery List</h4>
                   </div>
                   <div class="card-body">
                     <div class="table-responsive">
                       <table id="multi-filter-select" class="display table table-striped table-hover">
                       <thead>
                           <tr>
-                            <th>Product</th>
-                            <th>Category</th>
-                            <th>Quantity</th>
-                            <th>Selling </th>
-                            <th>Original </th>
-                            <th>Vat(%)</th>
+                            <th>Supplier</th>
+                            <th>Transaction ID</th>
+                            <th>Date</th>
                             <th>Action</th>
                           </tr>
                         </thead>
-                        <tfoot>
-                          <tr>
-                          <th>Product</th>
-                            <th>Category</th>
-                            <th>Quantity</th>
-                            <th>Selling </th>
-                            <th>Original </th>
-                            <th>Vat(%)</th>
-                          </tr>
-                        </tfoot>
                         <tbody>
                         <?php
-                            $sql = "Select * from `product`";
+                            $sql = "Select * from `delivery`";
 
                             $result = mysqli_query($conn, $sql);
                             $id_loop = 0;
                             if ($result) {
                                 while ($row = mysqli_fetch_assoc($result)) {
                                     $id = $row['id'];
-                                    $prod_name = $row['prod_name'];
-                                    $prod_category = $row['prod_category'];
-                                    $prod_quantity = $row['prod_quantity'];
-                                    $prod_price = $row['prod_price'];
-                                    $prod_orig_price = $row['orig_price'];
-                                    $prod_vat_price = $row['vat_percent'];
+                                    $sup_id = $row['sup_id'];
+                                    $tran_id = $row['trans_id'];
+                                    $del_date = $row['del_date'];
                                     $id_loop += 1;
 
-                                    $sql_category = "SELECT * FROM `category` WHERE id = $prod_category";
-                                    $result_category = mysqli_query($conn, $sql_category);
-                                    $row_category = mysqli_fetch_assoc($result_category);
+                                    $sql_supplier = "SELECT * FROM `supplier` WHERE id = $sup_id";
+                                    $result_supplier = mysqli_query($conn, $sql_supplier);
+                                    $row_supplier = mysqli_fetch_assoc($result_supplier);
+                                    if ($result_supplier && mysqli_num_rows($result_supplier) > 0) {
+                                        $view_name = $row_supplier['sup_name'];
+                                    } else {
+                                        $view_name = 'Unknown'; 
+                                    }
 
                                     echo '<tr>
-                                    <td>' . $prod_name . '</td>
-                                    <td>'. $row_category['name'] .'</td>
-                                    <td>'. $prod_quantity .'</td>
-                                    <td>'. $prod_price .'</td>
-                                    <td>'. $prod_orig_price .'</td>
-                                    <td>'. $prod_vat_price .'%'.'</td>
+                                    <td>' . $view_name . '</td>
+                                    <td>'. $tran_id .'</td>
+                                    <td>'. $del_date .'</td>
                                     <td>
-                                        <a href="./product/product_view.php?id='. $id .'" class="btn btn-info btn-sm">View</a>
-                                        <a href="./product/delete.php?id=' . $id . '" class="btn btn-danger btn-sm">Delete</a>
-                                        <a href="./product/product_edit.php?id='. $id .'" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="./delivery/delivery_view.php?id='. $id . '" class="btn btn-info btn-sm">View</a>
+                                        <a href="./delivery/delete.php?id=' . $id . '" class="btn btn-danger btn-sm">Delete</a>
+                                        <a href="./delivery/delivery_edit.php?id='. $id . '" class="btn btn-warning btn-sm">Edit</a>
                                     </td>
                                 </tr>';
                             ?>
@@ -419,34 +396,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
       
       $("#multi-filter-select").DataTable({
           pageLength: 5,
-          initComplete: function () {
-            this.api()
-              .columns([0, 1, 2, 3, 4, 5, 6, 7])
-              .every(function () {
-                var column = this;
-                var select = $(
-                  '<select class="form-select"><option value=""></option></select>'
-                )
-                  .appendTo($(column.footer()).empty())
-                  .on("change", function () {
-                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
-
-                    column
-                      .search(val ? "^" + val + "$" : "", true, false)
-                      .draw();
-                  });
-
-                column
-                  .data()
-                  .unique()
-                  .sort()
-                  .each(function (d, j) {
-                    select.append(
-                      '<option value="' + d + '">' + d + "</option>"
-                    );
-                  });
-              });
-          },
         });
     </script>
   </body>

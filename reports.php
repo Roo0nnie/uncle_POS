@@ -31,6 +31,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
       type="image/x-icon"
     />
 
+
     <!-- Fonts and icons -->
     <script src="assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
@@ -174,6 +175,12 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
                   <p>Suppliers</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="sales.php">
+                  <i class="fas fa-shopping-cart"></i>
+                  <p>Sales</p>
+                </a>
+              </li>
               <li class="nav-item active">
                 <a  href="reports.php">
                   <i class="fas fa-clipboard-list"></i>
@@ -281,7 +288,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
                           <p class="card-category">Highest Product Revenue</p>
-                          <h4 class="card-title">$ <?php echo number_format($highest_sale, 2); ?></h4>
+                          <h4 class="card-title"><?php echo number_format($highest_sale, 2); ?></h4>
                         </div>
                       </div>
                     </div>
@@ -300,7 +307,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
                           <p class="card-category">Lowest Product Revenue</p>
-                          <h4 class="card-title">$ <?php echo number_format($lowest_sale, 2); ?></h4>
+                          <h4 class="card-title"><?php echo number_format($lowest_sale, 2); ?></h4>
                         </div>
                       </div>
                     </div>
@@ -319,7 +326,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
                           <p class="card-category">Total Sales Revenue</p>
-                          <h4 class="card-title">$ <?php echo number_format($total_revenue, 2); ?></h4>
+                          <h4 class="card-title"><?php echo number_format($total_revenue, 2); ?></h4>
                         </div>
                       </div>
                     </div>
@@ -332,7 +339,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
               <div class="col-md-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4 class="card-title">Product Sales Details</h4>
+                    <h4 class="card-title">Product Details</h4>
                   </div>
                   <div class="card-body">
                     <div class="table-responsive">
@@ -341,11 +348,11 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
                           <tr>
                             <th>Product</th>
                             <th>Category</th>
-                            <th>Stock Quantity</th>
-                            <th>Unit Price</th>
-                            <th>Total Sold</th>
-                            <th>Total Sales Value</th>
-                            <th>Estimated Revenue</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Sold</th>
+                            <th> Sales</th>
+                            <th>Revenue</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -356,10 +363,10 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
                                   <td>' . sanitizeInput($row['prod_name']) . '</td>
                                   <td>' . sanitizeInput($row['category_name']) . '</td>
                                   <td>' . $row['stock_quantity'] . '</td>
-                                  <td>'.'$ ' . number_format($row['prod_price'], 2) . '</td>
+                                  <td>'. number_format($row['prod_price'], 2) . '</td>
                                   <td>'. $row['total_sold_quantity'] . '</td>
-                                  <td>'.'$ ' . number_format($row['total_sales_value'], 2) . '</td>
-                                  <td>'.'$ ' . number_format($row['estimated_revenue'], 2) . '</td>
+                                  <td>'. number_format($row['total_sales_value'], 2) . '</td>
+                                  <td>'. number_format($row['estimated_revenue'], 2) . '</td>
                               </tr>';
                           }
                           ?>
@@ -389,6 +396,14 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
     <script src="assets/js/plugin/chart.js/chart.min.js"></script>
     <script src="assets/js/plugin/datatables/datatables.min.js"></script>
     <script src="assets/js/admin.min.js"></script>
+
+    <script>
+       $(document).ready(function() {
+    $('#multi-filter-select').DataTable({
+          pageLength: 5,
+        });
+    });
+    </script>
 
     <script>
       var productRevenueData = <?php echo json_encode($product_revenue); ?>;

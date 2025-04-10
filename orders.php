@@ -360,8 +360,8 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                     <td>' . $order_id . '</td>
                                     <td>' . $order_first . ' '. $order_last . '</td>
                                     <td>'. $order_date .'</td>
-                                     <td>'.'$ '. number_format($order_pay, 2) .'</td>
-                                    <td>'.'$ '. number_format($order_price, 2) .'</td>';
+                                    <td>'. number_format($order_pay, 2) .'</td>
+                                    <td>'. number_format($order_price, 2) .'</td>';
 
                                     if($row['status'] == "Pending") {
                                       echo '<td>

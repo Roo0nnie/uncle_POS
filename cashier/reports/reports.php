@@ -20,7 +20,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
 <html lang="en">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Inventory System - Reports</title>
+    <title>Inventory System - Sales Report</title>
     <meta
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
       name="viewport"
@@ -108,7 +108,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
               <li class="nav-item active">
                 <a  href="../reports/reports.php">
                   <i class="fas fa-clipboard-list"></i>
-                  <p>Analytics</p>
+                  <p>Sales</p>
                 </a>
               </li>
             </ul>
@@ -153,8 +153,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
                           </div>
                           <div class="u-text">
                             <h4><?php print $_SESSION['name'] ?> <?php print $_SESSION['last_name'] ?></h4>
-                            <p class="text-muted">sample@gmail.com</p>
-                          
+                            <p class="text-muted"><?php print $_SESSION['email'] ?></p>
                           </div>
                         </div>
                       </li>
@@ -175,7 +174,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
           <div class="page-inner">
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
               <div>
-                <h3 class="fw-bold mb-3">Reports</h3>
+                <h3 class="fw-bold mb-3">Sales</h3>
                 <div class="page-header">
                   <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
@@ -185,7 +184,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
                       <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                      <a href="#">Reports</a>
+                      <a href="#">Sales</a>
                     </li>
                   </ul>
                 </div>
@@ -338,10 +337,10 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
                                   <td>' . sanitizeInput($row['prod_name']) . '</td>
                                   <td>' . sanitizeInput($row['category_name']) . '</td>
                                   <td>' . $row['stock_quantity'] . '</td>
-                                  <td>'.'$ ' . number_format($row['prod_price'], 2) . '</td>
+                                  <td>' . number_format($row['prod_price'], 2) . '</td>
                                   <td>'. $row['total_sold_quantity'] . '</td>
-                                  <td>'.'$ ' . number_format($row['total_sales_value'], 2) . '</td>
-                                  <td>'.'$ ' . number_format($row['estimated_revenue'], 2) . '</td>
+                                  <td>' . number_format($row['total_sales_value'], 2) . '</td>
+                                  <td>' . number_format($row['estimated_revenue'], 2) . '</td>
                               </tr>';
                           }
                           ?>

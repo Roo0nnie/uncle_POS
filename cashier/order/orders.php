@@ -101,7 +101,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               <li class="nav-item">
                 <a  href="../reports/reports.php">
                   <i class="fas fa-clipboard-list"></i>
-                  <p>Analytics</p>
+                  <p>Sales</p>
                 </a>
               </li>
             </ul>
@@ -172,8 +172,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                           </div>
                           <div class="u-text">
                             <h4><?php print $_SESSION['name'] ?> <?php print $_SESSION['last_name'] ?></h4>
-                            <p class="text-muted">sample@gmail.com</p>
-                          
+                            <p class="text-muted"><?php print $_SESSION['email'] ?></p>
                           </div>
                         </div>
                       </li>
@@ -352,8 +351,8 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                     <td>' . $order_id . '</td>
                                     <td>' . $order_first . ' '. $order_last . '</td>
                                     <td>'. $order_date .'</td>
-                                     <td>'.'$ '. number_format($order_pay, 2) .'</td>
-                                    <td>'.'$ '. number_format($order_price, 2) .'</td>
+                                     <td>'. number_format($order_pay, 2) .'</td>
+                                    <td>'. number_format($order_price, 2) .'</td>
                                     
                                     
                                     ';

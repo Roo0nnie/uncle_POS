@@ -162,7 +162,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               <li class="nav-item">
                 <a  href="./reports/reports.php">
                   <i class="fas fa-clipboard-list"></i>
-                  <p>Analytics</p>
+                  <p>Sales</p>
                 </a>
               </li>
             </ul>
@@ -357,7 +357,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                                                       <h4 class="text-center"><?php echo $prod_name; ?></h4>
                                                                       <div class="col-12 mt-3">
                                                                           <div class="d-flex justify-content-between align-items-center">
-                                                                              <p class="card-title mb-0"> $<?php echo $prod_price; ?>/<span style="font-size:12px;"><?php echo $prod_unit; ?></span></p>
+                                                                              <p class="card-title mb-0"><?php echo $prod_price; ?>/<span style="font-size:12px;"><?php echo $prod_unit; ?></span></p>
                                                                               <p class="card-title mb-0"> <span style="font-size:12px;">Stocks:</span> <?php echo $prod_quantity; ?> <span style="font-size:10px;"><?php echo $prod_unit; ?></span></p>
                                                                           </div>
                                                                           <div class="input-group mt-3">
