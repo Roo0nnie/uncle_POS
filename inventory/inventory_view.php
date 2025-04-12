@@ -6,36 +6,42 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
   if(isset($_GET['id'])){
 
     $id = mysqli_real_escape_string($conn, $_GET['id']);
-    $sql_delivery = "SELECT * FROM `delivery` WHERE id = '$id'";
-    $result_delivery = mysqli_query($conn, $sql_delivery);
+    $sql_product = "SELECT * FROM `product` WHERE id = '$id'";
+    $result_product = mysqli_query($conn, $sql_product);
 
-    if ($result_delivery && mysqli_num_rows($result_delivery) > 0) {
+    if ($result_product && mysqli_num_rows($result_product) > 0) {
 
-        $row_delivery = mysqli_fetch_assoc($result_delivery);
-        $view_id = $row_delivery['id'];
-        $view_sup_id = $row_delivery['sup_id'];
-        $view_trans_id = $row_delivery['trans_id'];
-        $view_del_date = $row_delivery['del_date'];
-        $view_created = $row_delivery['created_at'];
-        $view_updated = $row_delivery['updated_at'];
+        $row_product = mysqli_fetch_assoc($result_product);
+        $view_id = $row_product['id'];
+        $view_name = $row_product['prod_name'];
+        $view_quantity = $row_product['prod_quantity'];
+        $view_orig_price = $row_product['orig_price'];
+        $view_vat_price = $row_product['vat_percent'];
+        $view_price = $row_product['prod_price'];
+        $view_category = $row_product['prod_category'];
+        $view_barcode = $row_product['barcode'];
+        $view_description = $row_product['description'];
+        $view_unit = $row_product['unit'];
+        $view_expiry = $row_product['prod_expiry'];
+        $view_created = $row_product['created_at'];
+        $view_updated = $row_product['updated_at'];
 
-        $sql_supplier = "SELECT * FROM `supplier` WHERE id = $view_sup_id";
-        $result_supplier = mysqli_query($conn, $sql_supplier);
-        $row_supplier = mysqli_fetch_assoc($result_supplier);
-        if ($result_supplier && mysqli_num_rows($result_supplier) > 0) {
-            $view_name = $row_supplier['sup_name'];
-        } else {
-            $view_name = 'Unknown'; 
-        }
+         $sql_category = "SELECT * FROM `category` WHERE id = $view_category";
+         $result_category = mysqli_query($conn, $sql_category);
+         if ($result_category && mysqli_num_rows($result_category) > 0) {
+             $row_category = mysqli_fetch_assoc($result_category);
+         } else {
+             $row_category = ['name' => '']; 
+         }
 
     } else {
-      $_SESSION['error_message'] = "No supplier id found!.";
-      header("Location: ../delivery.php");
+      $_SESSION['error_message'] = "No category id found!.";
+      header("Location: ../inventory.php");
       exit();
     }
 } else {
   $_SESSION['error_message'] = "No ID provided in the URL.";
-  header("Location: ../delivery.php");
+  header("Location: ../inventory.php");
   exit();
 }
 
@@ -133,21 +139,21 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   <p>Users</p>
                 </a>
               </li>
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../product.php">
                   <i class="fas fa-boxes"></i>
                   <p>Products</p>
                 </a>
               </li>
 
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../category.php">
                 <i class="fas fa-folder"></i>  
                   <p>Categories</p>
                 </a>
               </li>
              
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../orders.php">
                   <i class="fas fa-shopping-cart"></i>
                   <p>Orders</p>
@@ -161,25 +167,25 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 </a>
               </li>
 
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../discount.php">
                 <i class="fas fa-percentage"></i>
                   <p>Discounts</p>
                 </a>
               </li>
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../supplier.php">
                   <i class="fas fa-boxes"></i>
                   <p>Suppliers</p>
                 </a>
               </li>
-              <li class="nav-item active ">
+              <li class="nav-item ">
                 <a  href="../delivery.php">
                   <i class="fas fa-truck"></i>
                   <p>Delivery</p>
                 </a>
               </li>
-              <li class="nav-item ">
+              <li class="nav-item active">
                 <a  href="../inventory.php">
                   <i class="fas fa-boxes"></i>
                   <p>Inventory</p>
@@ -287,7 +293,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
   <div class="page-inner">
     <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pt-2 pb-4">
       <div>
-        <h3 class="fw-bold mb-3">View Delivery</h3>
+        <h3 class="fw-bold mb-3">View Product</h3>
         <div class="page-header">
           <ul class="breadcrumbs mb-3">
             <li class="nav-home">
@@ -295,11 +301,11 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
             </li>
             <li class="separator"><i class="icon-arrow-right"></i></li>
             <li class="nav-item">
-              <a href="#">Delivery</a>
+              <a href="#">Product</a>
             </li>
             <li class="separator"><i class="icon-arrow-right"></i></li>
             <li class="nav-item">
-              <a href="#">View Delivery</a>
+              <a href="#">View Product</a>
             </li>
           </ul>
         </div>
@@ -310,19 +316,19 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
       <div class="col-12">
         <div class="card card-stats card-round">
           <div class="card-body">
-            <p class="card-category fw-bold">Delivery Information</p>
+            <p class="card-category fw-bold">Product Information</p>
 
             <div class="row g-3">
               <div class="col-sm-12 col-md-6">
                 <div class="mb-4">
-                  <h4 class="card-title">Supplier Name</h4>
-                  <input type="text" class="form-control" placeholder="Supplier name" value="<?php print $view_name; ?>" readonly>
+                  <h4 class="card-title">Product Name</h4>
+                  <input type="text" class="form-control" placeholder="Product name" value="<?php print $view_name; ?>" readonly>
                 </div>
               </div>
-              <div class="col-sm-12 col-md-6" >
+              <div class="col-sm-12 col-md-6">
                 <div class="mb-4">
-                  <h4 class="card-title">Transaction ID</h4>
-                  <input type="text" class="form-control" value="<?php print $view_trans_id; ?>" readonly>
+                  <h4 class="card-title">Category</h4>
+                  <input type="text" class="form-control" value="<?php print isset($row_category['name']) ? $row_category['name'] : ''; ?>" readonly>
                 </div>
               </div>
             </div>
@@ -330,13 +336,73 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
             <div class="row g-3">
               <div class="col-sm-12 col-md-6">
                 <div class="mb-4">
-                  <h4 class="card-title">Date</h4>
-                  <input type="datetime" class="form-control" value="<?php echo $view_del_date; ?>" readonly>
+                <h4 class="card-title">Quantity</h4>
+                <input type="number" class="form-control" value="<?php print $view_quantity; ?>" readonly>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-6">
+                <div class="mb-4">
+                <h4 class="card-title">Unit</h4>
+                <input type="text" class="form-control" value="<?php print $view_unit; ?>" readonly>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row g-3">
+              <div class="col-sm-12 col-md-6">
+                <div class="mb-4">
+                  <div style="display: none;">
+                    <h4 class="card-title mt-2">Vat (%)</h4>
+                    <input type="number" class="form-control" value="<?php print $view_vat_price; ?>" readonly>
+                  </div>
+                  <h4 class="card-title mt-2">Cost Price</h4>
+                  <input type="number" class="form-control" value="<?php print $view_orig_price; ?>" readonly>
+                  </div>
+              </div>
+              <div class="col-sm-12 col-md-6">
+                <div class="mb-4">
+                <h4 class="card-title mt-2">Selling Price</h4>
+                  <input type="number" class="form-control" value="<?php print $view_price; ?>" readonly>
                 </div>
               </div>
             </div>
 
             <div class="row g-3">
+              <div class="col-sm-12 col-md-6">
+                <div class="mb-4">
+                <h4 class="card-title">Barcode</h4>
+                <input type="text" name="barcode" value="<?php print $view_barcode; ?>" class="form-control" placeholder="Barcode" readonly>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-6">
+                <div class="mb-4">
+                <h4 class="card-title">Expiry Date</h4>
+
+                  <?php if ($view_expiry == 1) { ?>
+                    <input type="text" class="form-control" value="Yes" readonly>
+                  <?php } else { ?>
+                    <input type="text" class="form-control" value="No" readonly>
+                  <?php } ?>
+                </div>
+              </div>
+            </div>
+
+           
+
+            <div class="row align-items-center">
+              <div class="col-sm-12 col-md-12 ms-3 ms-sm-0">
+                  <div class="numbers">
+                      <div class="mt-4">
+                      <h4 class="card-title mt-2">Description</h4>
+                      <textarea name="description" class="form-control" placeholder="Description" readonly><?php print $view_description; ?></textarea>
+                    </div>
+                      </div>
+                  </div>
+                </div>
+           
+
+            <div class="row g-3 mt-3">
               <div class="col-sm-12 col-md-6">
                 <div class="mb-4">
                   <h4 class="card-title">Created</h4>
@@ -357,8 +423,8 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
     </div>
 
     <div class="text-start mt-3">
-      <a href="../delivery.php" class="btn btn-primary ">
-        <i class="fas fa-cart-plus"></i> Back to Delivery
+      <a href="../inventory.php" class="btn btn-primary ">
+        <i class="fas fa-cart-plus"></i> Back to Inventory
       </a>
     </div>
   </div>

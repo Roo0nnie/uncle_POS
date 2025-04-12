@@ -20,6 +20,12 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
       type="image/x-icon"
     />
 
+      <!-- Ensure Bootstrap and DataTables CSS are included -->
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+
+
     <!-- Fonts and icons -->
     <script src="assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
@@ -98,21 +104,21 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   <p>Users</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a href="product.php">
                   <i class="fas fa-boxes"></i>
                   <p>Products</p>
                 </a>
               </li>
 
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a href="category.php">
                 <i class="fas fa-folder"></i>  
                   <p>Categories</p>
                 </a>
               </li>
              
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a href="orders.php">
                   <i class="fas fa-shopping-cart"></i>
                   <p>Orders</p>
@@ -136,6 +142,24 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 <a href="supplier.php">
                   <i class="fas fa-boxes"></i>
                   <p>Suppliers</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  href="delivery.php">
+                  <i class="fas fa-truck"></i>
+                  <p>Delivery</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  href="inventory.php">
+                  <i class="fas fa-boxes"></i>
+                  <p>Inventory</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  href="sales.php">
+                  <i class="fas fa-receipt"></i>
+                  <p>Sales</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -299,7 +323,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tfoot>
+                    <!-- <tfoot>
                         <tr>
                             <th>#</th>
                             <th>Name</th>
@@ -307,7 +331,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                             <th>Description</th>
                             <th>Action</th>
                         </tr>
-                    </tfoot>
+                    </tfoot> -->
                     <tbody>
                           <?php
 
@@ -398,38 +422,48 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 
     <script src="assets/js/setting-demo.js"></script>
     <script src="assets/js/demo.js"></script>
+
+    
+    <!-- Include jQuery, DataTables, and Buttons JS -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
     <script>
       
       $("#multi-filter-select").DataTable({
           pageLength: 5,
-          initComplete: function () {
-            this.api()
-              .columns([1])
-              .every(function () {
-                var column = this;
-                var select = $(
-                  '<select class="form-select"><option value=""></option></select>'
-                )
-                  .appendTo($(column.footer()).empty())
-                  .on("change", function () {
-                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
+          // initComplete: function () {
+          //   this.api()
+          //     .columns([1])
+          //     .every(function () {
+          //       var column = this;
+          //       var select = $(
+          //         '<select class="form-select"><option value=""></option></select>'
+          //       )
+          //         .appendTo($(column.footer()).empty())
+          //         .on("change", function () {
+          //           var val = $.fn.dataTable.util.escapeRegex($(this).val());
 
-                    column
-                      .search(val ? "^" + val + "$" : "", true, false)
-                      .draw();
-                  });
+          //           column
+          //             .search(val ? "^" + val + "$" : "", true, false)
+          //             .draw();
+          //         });
 
-                column
-                  .data()
-                  .unique()
-                  .sort()
-                  .each(function (d, j) {
-                    select.append(
-                      '<option value="' + d + '">' + d + "</option>"
-                    );
-                  });
-              });
-          },
+          //       column
+          //         .data()
+          //         .unique()
+          //         .sort()
+          //         .each(function (d, j) {
+          //           select.append(
+          //             '<option value="' + d + '">' + d + "</option>"
+          //           );
+          //         });
+          //     });
+          // },
         });
     </script>
   </body>

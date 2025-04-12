@@ -17,7 +17,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
         $edit_last_name = $row_user['last_name'];
         $edit_email = $row_user['email'];
         $edit_role = $row_user['role'];
-        $edit_status = $row_user['status'];
         $edit_created = $row_user['created_at'];
         $edit_updated = $row_user['updated_at'];
 
@@ -39,14 +38,12 @@ if(isset($_POST['submit'])){
     $edit_last_name = mysqli_real_escape_string($conn, trim($_POST['last_name']));
     $edit_email = mysqli_real_escape_string($conn, trim($_POST['email']));
     $edit_role = mysqli_real_escape_string($conn, trim($_POST['role']));
-    $edit_status = mysqli_real_escape_string($conn, trim($_POST['status']));
 
     $sql_user = "UPDATE user SET
     name = '$edit_name',
     last_name = '$edit_last_name',
     email = '$edit_email',
-    role = '$edit_role',
-    status = '$edit_status', ";
+    role = '$edit_role' ";
 
     $sql_user .= "updated_at = now()
         WHERE id = '$edit_id'";
@@ -196,6 +193,24 @@ if(isset($_POST['submit'])){
                   <p>Suppliers</p>
                 </a>
               </li>
+              <li class="nav-item ">
+                <a  href="../delivery.php">
+                  <i class="fas fa-truck"></i>
+                  <p>Delivery</p>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a  href="../inventory.php">
+                  <i class="fas fa-boxes"></i>
+                  <p>Inventory</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  href="../sales.php">
+                  <i class="fas fa-receipt"></i>
+                  <p>Sales</p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a  href="../reports.php">
                   <i class="fas fa-clipboard-list"></i>
@@ -335,15 +350,6 @@ if(isset($_POST['submit'])){
                       </div>
 
                       <div class="row g-3">
-                        <div class="col-sm-12 col-md-6">
-                          <div class="mb-4">
-                            <h4 class="card-title">Status</h4>
-                            <select name="status" class="form-control">
-                              <option value="Active" <?php echo ($edit_status == 'Active') ? 'selected' : ''; ?>>Active</option>
-                              <option value="Inactive" <?php echo ($edit_status == 'Inactive') ? 'selected' : ''; ?>>Inactive</option>
-                            </select>
-                          </div>
-                        </div>
                         <div class="col-sm-12 col-md-6">
                           <div class="mb-4">
                             <h4 class="card-title">Email</h4>

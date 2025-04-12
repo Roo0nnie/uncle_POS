@@ -20,11 +20,9 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
             $order_name = $order['firstname'];
             $order_middle = $order['middlename'];
             $order_last = $order['lastname'];
-            $order_email = $order['email'];
             $order_phone = $order['phone'];
             $order_address = $order['address'];
             $order_status = $order['status'];
-            $order_instruction = $order['instruction'];
             $order_payMethod = $order['pay_method'];
         } else {
             $_SESSION['error_message'] = "No order found with this ID.";
@@ -154,7 +152,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 </a>
               </li>
 
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a href="../category.php">
                 <i class="fas fa-folder"></i>  
                   <p>Categories</p>
@@ -181,10 +179,28 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   <p>Discounts</p>
                 </a>
               </li>
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../supplier.php">
                   <i class="fas fa-boxes"></i>
                   <p>Suppliers</p>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a  href="../delivery.php">
+                  <i class="fas fa-truck"></i>
+                  <p>Delivery</p>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a  href="../inventory.php">
+                  <i class="fas fa-boxes"></i>
+                  <p>Inventory</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  href="../sales.php">
+                  <i class="fas fa-receipt"></i>
+                  <p>Sales</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -328,7 +344,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                             </div>
                                             <div class="col-md-6">
                                                 <p><strong>Name:</strong> <?php echo $order_name . ' ' . $order_middle . ' ' . $order_last; ?></p>
-                                                <p><strong>Email:</strong> <?php echo $order_email; ?></p>
+                                   
                                                 <p><strong>Phone:</strong> <?php echo $order_phone; ?></p>
                                             </div>
                                         </div>
@@ -344,7 +360,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                     <div class="card-body">
                                         <h4>Delivery Information</h4>
                                         <p><strong>Address:</strong> <?php echo $order_address; ?></p>
-                                        <p><strong>Instructions:</strong> <?php echo $order_instruction ? $order_instruction : 'No instructions provided.'; ?></p>
+                                    
                                     </div>
                                 </div>
                             </div>

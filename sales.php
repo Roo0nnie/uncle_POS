@@ -31,6 +31,11 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
       type="image/x-icon"
     />
 
+        <!-- Ensure Bootstrap and DataTables CSS are included -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+
     <style>
     #multi-filter-select {
         width: 100%;
@@ -42,6 +47,28 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+    }
+
+        /* Custom styling for layout */
+        .dataTables_wrapper .top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        text-align: left;
+        flex-grow: 1;
+    }
+
+    .dataTables_wrapper .dt-buttons {
+        text-align: right;
+    }
+
+    /* Ensure the search bar doesn't take too much space */
+    .dataTables_wrapper .dataTables_filter input {
+        width: 200px; /* Adjust as needed */
     }
     </style>
 
@@ -148,7 +175,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
                   <p>Users</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a href="product.php">
                   <i class="fas fa-boxes"></i>
                   <p>Products</p>
@@ -157,12 +184,12 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
 
               <li class="nav-item ">
                 <a href="category.php">
-                  <i class="fas fa-folder"></i>
+                <i class="fas fa-folder"></i>  
                   <p>Categories</p>
                 </a>
               </li>
              
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a href="orders.php">
                   <i class="fas fa-shopping-cart"></i>
                   <p>Orders</p>
@@ -176,22 +203,40 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
                 </a>
               </li>
 
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a href="discount.php">
                 <i class="fas fa-percentage"></i>
                   <p>Discounts</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a href="supplier.php">
                   <i class="fas fa-boxes"></i>
                   <p>Suppliers</p>
                 </a>
               </li>
+              <li class="nav-item ">
+                <a  href="delivery.php">
+                  <i class="fas fa-truck"></i>
+                  <p>Delivery</p>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a  href="inventory.php">
+                  <i class="fas fa-boxes"></i>
+                  <p>Inventory</p>
+                </a>
+              </li>
               <li class="nav-item active">
                 <a  href="sales.php">
-                  <i class="fas fa-clipboard-list"></i>
+                  <i class="fas fa-receipt"></i>
                   <p>Sales</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  href="reports.php">
+                  <i class="fas fa-clipboard-list"></i>
+                  <p>Reports</p>
                 </a>
               </li>
             </ul>
@@ -425,11 +470,79 @@ ORDER BY
     <script src="assets/js/plugin/datatables/datatables.min.js"></script>
     <script src="assets/js/admin.min.js"></script>
 
+    <!--  -->
+       <!-- Include jQuery, DataTables, and Buttons JS -->
+       <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+      <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+      <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+      <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
 
     <script>
       $(document).ready(function() {
     $('#multi-filter-select').DataTable({
           pageLength: 5,
+          dom: '<"top"fB>rt<"bottom"lp><"clear">', // f = filter, B = buttons
+          buttons: [
+            {
+                extend: 'pdfHtml5',
+                text: 'Download PDF',
+                title: 'Product Sales',
+                orientation: 'landscape',
+                pageSize: 'A4',
+                className: 'btn btn-sm btn-danger text-white mx-4',
+                exportOptions: {
+                    columns: [0, 1, 4, 5, 6, 7,9 ,12 ,13 ,14] 
+                },
+                customize: function(doc) {
+                    // Adjust page margins to maximize space
+                    doc.pageMargins = [20, 60, 20, 40]; // [left, top, right, bottom]
+
+                    // Style the title
+                    doc.content[0].text = 'Product Sale Report';
+                    doc.content[0].style = 'title';
+                    doc.styles.title = {
+                        fontSize: 16,
+                        bold: true,
+                        alignment: 'center',
+                        margin: [0, 0, 0, 20] // Space below the title
+                    };
+
+                    // Adjust table styles
+                    doc.content[1].table.widths = [ '*', '*', '*', '*', '*', '*', '*', '*', '*', '*']; // Distribute columns evenly
+                    doc.content[1].layout = {
+                        hLineWidth: function(i, node) { return 0.5; },
+                        vLineWidth: function(i, node) { return 0.5; },
+                        paddingLeft: function(i, node) { return 5; },
+                        paddingRight: function(i, node) { return 5; },
+                        paddingTop: function(i, node) { return 3; },
+                        paddingBottom: function(i, node) { return 3; }
+                    };
+
+                    // Adjust default table styles (font size, alignment, etc.)
+                    doc.styles.tableHeader = {
+                        fontSize: 10,
+                        bold: true,
+                        alignment: 'center',
+                        fillColor: '#f2f2f2'
+                    };
+                    doc.styles.tableBodyEven = {
+                        fontSize: 9,
+                        alignment: 'center'
+                    };
+                    doc.styles.tableBodyOdd = {
+                        fontSize: 9,
+                        alignment: 'center'
+                    };
+
+                    // Ensure the table takes full width
+                    doc.content[1].margin = [0, 0, 0, 0]; // Remove table margins
+                }
+            }
+        ]
         });
       });
     </script>

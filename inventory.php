@@ -19,12 +19,11 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
       href="assets/img/admin/favicon.ico"
       type="image/x-icon"
     />
-
-      <!-- Ensure Bootstrap and DataTables CSS are included -->
-      <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    
+          <!-- Ensure Bootstrap and DataTables CSS are included -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-
 
 
     <!-- Fonts and icons -->
@@ -84,10 +83,9 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
           </div>
           <!-- End Logo Header -->
         </div>
-        
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
-            <ul class="nav nav-secondary">
+          <ul class="nav nav-secondary">
               <li class="nav-item">
                 <a href="dashboard.php">
                   <i class="fas fa-home"></i>
@@ -100,13 +98,13 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 </span>
                 <h4 class="text-section">Components</h4>
               </li>
-              <li class="nav-item active">
+              <li class="nav-item ">
                 <a href="user.php">
                 <i class="fas fa-user"></i>
                   <p>Users</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a href="product.php">
                   <i class="fas fa-boxes"></i>
                   <p>Products</p>
@@ -152,7 +150,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   <p>Delivery</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item active">
                 <a  href="inventory.php">
                   <i class="fas fa-boxes"></i>
                   <p>Inventory</p>
@@ -218,7 +216,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
           ?>
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
               <div>
-                <h3 class="fw-bold mb-3">User Management</h3>
+                <h3 class="fw-bold mb-3">Inventory</h3>
                 <div class="page-header">
                   <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
@@ -230,14 +228,14 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       <i class="icon-arrow-right"></i>
                     </li>
                     <li class="nav-item">
-                      <a href="#">User</a>
+                      <a href="#">Product</a>
                     </li>
                   </ul>
                 </div>
               </div>
-              <div class="ms-md-auto py-2 py-md-0">
-                <a href="./user/user_add.php" class="btn btn-primary "><i class="fas fa-cart-plus"></i> Add User</a>
-              </div>
+              <!-- <div class="ms-md-auto py-2 py-md-0">
+                <a href="./product/product_add.php" class="btn btn-primary "><i class="fas fa-cart-plus"></i> Add Product</a>
+              </div> -->
             </div>
             <div class="row">
               <div class="col-sm-6 col-md-6">
@@ -253,10 +251,10 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                       </div>
                       <div class="col col-stats ms-3 ms-sm-0">
                         <div class="numbers">
-                          <p class="card-category">Total Users</p>
+                          <p class="card-category">Total Products</p>
                           <h4 class="card-title">
                             <?php 
-                              $sql = "SELECT COUNT(*) FROM user WHERE role != 'admin'";
+                              $sql = "SELECT COUNT(*) FROM product";
                               $result = mysqli_query($conn, $sql);
                               $row = mysqli_fetch_array($result);
 
@@ -264,9 +262,45 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                 echo $row[0];
                               }
                               else {
-                                echo "No user available";
+                                echo "No product available";
                               }
                            ?>
+                          </h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-6">
+                <div class="card card-stats card-round">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-icon">
+                        <div
+                          class="icon-big text-center icon-success bubble-shadow-small"
+                        >
+                          <i class="fas fa-dollar-sign"></i>
+                        </div>
+                      </div>
+                      <div class="col col-stats ms-3 ms-sm-0">
+                        <div class="numbers">
+                          <p class="card-category">Product Quantity</p>
+                          <h4 class="card-title">
+                            <?php
+                            $sql = "SELECT SUM(prod_quantity) FROM product";
+                            $result = mysqli_query($conn, $sql);
+                            $row = mysqli_fetch_array($result);
+
+                            if ($row[0] != NULL) {
+                              echo $row[0];
+                            }
+                            else {
+                              echo "No data available";
+                            }
+                            
+                            ?>
+
                           </h4>
                         </div>
                       </div>
@@ -280,45 +314,54 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
               <div class="col-md-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4 class="card-title">User List</h4>
+                    <h4 class="card-title">Product Inventory</h4>
                   </div>
                   <div class="card-body">
                     <div class="table-responsive">
                       <table id="multi-filter-select" class="display table table-striped table-hover">
                       <thead>
                           <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Quantity</th>
+                            <th>Cost Price</th>
+                            <th>Selling </th>
+                       
                             <th>Action</th>
                           </tr>
                         </thead>
                         <tbody>
                         <?php
-                            $sql = "Select * from `user` WHERE role != 'admin'";
+                            $sql = "Select * from `product`";
 
                             $result = mysqli_query($conn, $sql);
                             $id_loop = 0;
                             if ($result) {
                                 while ($row = mysqli_fetch_assoc($result)) {
                                     $id = $row['id'];
-                                    $name = $row['name'];
-                                    $last_name = $row['last_name'];
-                                    $email = $row['email'];
-                                    $role = $row['role'];
-                                    $status = $row['status'];
+                                    $prod_name = $row['prod_name'];
+                                    $prod_category = $row['prod_category'];
+                                    $prod_quantity = $row['prod_quantity'];
+                                    $prod_price = $row['prod_price'];
+                                    $prod_orig_price = $row['orig_price'];
+                                    $prod_vat_price = $row['vat_percent'];
                                     $id_loop += 1;
 
+                                    $sql_category = "SELECT * FROM `category` WHERE id = $prod_category";
+                                    $result_category = mysqli_query($conn, $sql_category);
+                                    $row_category = mysqli_fetch_assoc($result_category);
+
                                     echo '<tr>
-                                    <td>' . $id_loop . '</td>
-                                    <td>'. $name .' '. $last_name .'</td>
-                                    <td>'. $email .'</td>
-                                    <td>'. $role .'</td>
+                                    <td>' . $prod_name . '</td>
+                                    <td>'. $row_category['name'] .'</td>
+                                    <td>'. $prod_quantity .'</td>
+                                       <td>'. $prod_orig_price .'</td>
+                                    <td>'. $prod_price .'</td>
+                                 
                                     <td>
-                                        <a href="./user/user_view.php?id='. $id .'" class="btn btn-info btn-sm">View</a>
-                                        <a href="./user/delete.php?id=' . $id . '" class="btn btn-danger btn-sm">Delete</a>
-                                        <a href="./user/user_edit.php?id='. $id .'" class="btn btn-warning btn-sm">Edit</a>
+                                        <a href="./inventory/inventory_view.php?id='. $id .'" class="btn btn-info btn-sm">View</a>
+                                        <a href="./inventory/delete.php?id=' . $id . '" class="btn btn-danger btn-sm">Delete</a>
+                                        <a href="./inventory/inventory_edit.php?id='. $id .'" class="btn btn-warning btn-sm">Edit Stock</a>
                                     </td>
                                 </tr>';
                             ?>
@@ -386,9 +429,8 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 
     <script src="assets/js/setting-demo.js"></script>
     <script src="assets/js/demo.js"></script>
-
-        <!-- Include jQuery, DataTables, and Buttons JS -->
-        <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <!-- Include jQuery, DataTables, and Buttons JS -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -396,37 +438,11 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
     <script>
+
       
       $("#multi-filter-select").DataTable({
           pageLength: 5,
-          initComplete: function () {
-            this.api()
-              .columns([0, 1, 2, 3, 4, 5, 6, 7])
-              .every(function () {
-                var column = this;
-                var select = $(
-                  '<select class="form-select"><option value=""></option></select>'
-                )
-                  .appendTo($(column.footer()).empty())
-                  .on("change", function () {
-                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
-
-                    column
-                      .search(val ? "^" + val + "$" : "", true, false)
-                      .draw();
-                  });
-
-                column
-                  .data()
-                  .unique()
-                  .sort()
-                  .each(function (d, j) {
-                    select.append(
-                      '<option value="' + d + '">' + d + "</option>"
-                    );
-                  });
-              });
-          },
+          
         });
     </script>
   </body>

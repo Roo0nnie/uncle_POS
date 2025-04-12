@@ -31,6 +31,13 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
       type="image/x-icon"
     />
 
+      <!-- Ensure Bootstrap and DataTables CSS are included -->
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+
+
+
     <!-- Fonts and icons -->
     <script src="../../assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
@@ -371,6 +378,24 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['name'])) {
     <script src="../../assets/js/plugin/datatables/datatables.min.js"></script>
     <script src="../../assets/js/admin.min.js"></script>
 
+        <!-- Include jQuery, DataTables, and Buttons JS -->
+        <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
+
+    <script>
+       $("#multi-filter-select").DataTable({
+          pageLength: 5,
+        
+    });
+
+      
+    </script>
     <script>
       var productRevenueData = <?php echo json_encode($product_revenue); ?>;
 

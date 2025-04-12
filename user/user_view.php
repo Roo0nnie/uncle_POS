@@ -17,7 +17,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
         $view_last_name = $row_user['last_name'];
         $view_email = $row_user['email'];
         $view_role = $row_user['role'];
-        $view_status = $row_user['status'];
         $view_created = $row_user['created_at'];
         $view_updated = $row_user['updated_at'];
 
@@ -167,6 +166,24 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   <p>Suppliers</p>
                 </a>
               </li>
+              <li class="nav-item ">
+                <a  href="../delivery.php">
+                  <i class="fas fa-truck"></i>
+                  <p>Delivery</p>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a  href="../inventory.php">
+                  <i class="fas fa-boxes"></i>
+                  <p>Inventory</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  href="../sales.php">
+                  <i class="fas fa-receipt"></i>
+                  <p>Sales</p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a  href="../reports.php">
                   <i class="fas fa-clipboard-list"></i>
@@ -304,12 +321,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
             </div>
 
             <div class="row g-3">
-              <div class="col-sm-12 col-md-6">
-                <div class="mb-4">
-                  <h4 class="card-title">Status</h4>
-                  <input type="text" class="form-control" value="<?php print $view_status; ?>" readonly>
-                </div>
-              </div>
+         
               <div class="col-sm-12 col-md-6">
                 <div class="mb-4">
                 <h4 class="card-title">Role</h4>

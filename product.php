@@ -20,6 +20,13 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
       type="image/x-icon"
     />
 
+      <!-- Ensure Bootstrap and DataTables CSS are included -->
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+
+ 
+
     <!-- Fonts and icons -->
     <script src="assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
@@ -136,6 +143,24 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 <a href="supplier.php">
                   <i class="fas fa-boxes"></i>
                   <p>Suppliers</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  href="delivery.php">
+                  <i class="fas fa-truck"></i>
+                  <p>Delivery</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  href="inventory.php">
+                  <i class="fas fa-boxes"></i>
+                  <p>Inventory</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  href="sales.php">
+                  <i class="fas fa-receipt"></i>
+                  <p>Sales</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -302,20 +327,9 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                             <th>Quantity</th>
                             <th>Selling </th>
                             <th>Original </th>
-                            <th>Vat(%)</th>
                             <th>Action</th>
                           </tr>
                         </thead>
-                        <tfoot>
-                          <tr>
-                          <th>Product</th>
-                            <th>Category</th>
-                            <th>Quantity</th>
-                            <th>Selling </th>
-                            <th>Original </th>
-                            <th>Vat(%)</th>
-                          </tr>
-                        </tfoot>
                         <tbody>
                         <?php
                             $sql = "Select * from `product`";
@@ -330,7 +344,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                     $prod_quantity = $row['prod_quantity'];
                                     $prod_price = $row['prod_price'];
                                     $prod_orig_price = $row['orig_price'];
-                                    $prod_vat_price = $row['vat_percent'];
+                                    // $prod_vat_price = $row['vat_percent'];
                                     $id_loop += 1;
 
                                     $sql_category = "SELECT * FROM `category` WHERE id = $prod_category";
@@ -343,7 +357,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                     <td>'. $prod_quantity .'</td>
                                     <td>'. $prod_price .'</td>
                                     <td>'. $prod_orig_price .'</td>
-                                    <td>'. $prod_vat_price .'%'.'</td>
                                     <td>
                                         <a href="./product/product_view.php?id='. $id .'" class="btn btn-info btn-sm">View</a>
                                         <a href="./product/delete.php?id=' . $id . '" class="btn btn-danger btn-sm">Delete</a>
@@ -415,38 +428,20 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 
     <script src="assets/js/setting-demo.js"></script>
     <script src="assets/js/demo.js"></script>
+
+       <!-- Include jQuery, DataTables, and Buttons JS -->
+       <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
     <script>
       
       $("#multi-filter-select").DataTable({
           pageLength: 5,
-          initComplete: function () {
-            this.api()
-              .columns([0, 1, 2, 3, 4, 5, 6, 7])
-              .every(function () {
-                var column = this;
-                var select = $(
-                  '<select class="form-select"><option value=""></option></select>'
-                )
-                  .appendTo($(column.footer()).empty())
-                  .on("change", function () {
-                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
-
-                    column
-                      .search(val ? "^" + val + "$" : "", true, false)
-                      .draw();
-                  });
-
-                column
-                  .data()
-                  .unique()
-                  .sort()
-                  .each(function (d, j) {
-                    select.append(
-                      '<option value="' + d + '">' + d + "</option>"
-                    );
-                  });
-              });
-          },
+          
         });
     </script>
   </body>

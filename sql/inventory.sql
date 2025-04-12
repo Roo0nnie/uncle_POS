@@ -67,7 +67,7 @@ CREATE TABLE `customer` (
   `cus_payment` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `trans_id_UNIQUE` (`trans_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,8 +76,38 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-INSERT INTO `customer` VALUES (63,'Customer 1',NULL,NULL,NULL,'2025-03-18',NULL,NULL,NULL,'Cash',164.00,'Done','2025-03-18 08:11:51','3084849497436',200.00),(64,'John Doe',NULL,NULL,NULL,'2025-03-27',NULL,NULL,NULL,'Cash',509.20,'Done','2025-03-27 22:20:25','8317442918900',600.02),(65,'John Smith',NULL,NULL,NULL,'2025-03-27',NULL,NULL,NULL,'Cash',144.00,'Done','2025-03-27 22:35:14','1043666532158',250.00),(66,'Mike Flores',NULL,NULL,NULL,'2025-03-27',NULL,NULL,20.00,'Cash',471.20,'Done','2025-03-27 23:07:53','8270470198739',500.00),(67,'Michael Bon',NULL,NULL,NULL,'2025-03-27',NULL,NULL,0.00,'Cash',144.00,'Done','2025-03-27 23:25:15','3115412776340',200.00),(68,'Mike Tyson',NULL,NULL,NULL,'2025-03-27',NULL,NULL,20.00,'Cash',23.28,'Done','2025-03-27 23:53:40','4552190771138',30.00),(69,'Joenillo',NULL,NULL,NULL,'2025-03-27',NULL,NULL,30.00,'Cash',359.94,'Done','2025-03-28 00:15:34','1770483246917',400.00);
+INSERT INTO `customer` VALUES (63,'Customer 1',NULL,NULL,NULL,'2025-03-18',NULL,NULL,NULL,'Cash',164.00,'Done','2025-03-18 08:11:51','3084849497436',200.00),(64,'John Doe',NULL,NULL,NULL,'2025-03-27',NULL,NULL,NULL,'Cash',509.20,'Done','2025-03-27 22:20:25','8317442918900',600.02),(65,'John Smith',NULL,NULL,NULL,'2025-03-27',NULL,NULL,NULL,'Cash',144.00,'Done','2025-03-27 22:35:14','1043666532158',250.00),(66,'Mike Flores',NULL,NULL,NULL,'2025-03-27',NULL,NULL,20.00,'Cash',471.20,'Done','2025-03-27 23:07:53','8270470198739',500.00),(67,'Michael Bon',NULL,NULL,NULL,'2025-03-27',NULL,NULL,0.00,'Cash',144.00,'Done','2025-03-27 23:25:15','3115412776340',200.00),(68,'Mike Tyson',NULL,NULL,NULL,'2025-03-27',NULL,NULL,20.00,'Cash',23.28,'Done','2025-03-27 23:53:40','4552190771138',30.00),(69,'Joenillo',NULL,NULL,NULL,'2025-03-27',NULL,NULL,30.00,'Cash',359.94,'Done','2025-03-28 00:15:34','1770483246917',400.00),(70,'Mike Smith',NULL,NULL,NULL,'2025-04-10',NULL,NULL,20.00,'Cash',115.20,'Done','2025-04-10 22:06:20','439919100236',120.00),(71,'Mich',NULL,NULL,NULL,'2025-04-12',NULL,NULL,0.00,'Cash',1140.00,'Done','2025-04-12 22:18:57','358928266427',1200.00),(72,'Mike',NULL,NULL,NULL,'2025-04-12',NULL,NULL,0.00,'Cash',334.00,'Done','2025-04-13 00:43:27','8706991282074',350.00);
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `delivery`
+--
+
+DROP TABLE IF EXISTS `delivery`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `delivery` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `sup_id` int DEFAULT NULL,
+  `trans_id` int DEFAULT NULL,
+  `del_date` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sup_id_idx` (`sup_id`),
+  CONSTRAINT `sup_id` FOREIGN KEY (`sup_id`) REFERENCES `supplier` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `delivery`
+--
+
+LOCK TABLES `delivery` WRITE;
+/*!40000 ALTER TABLE `delivery` DISABLE KEYS */;
+INSERT INTO `delivery` VALUES (1,1,9123123,'2025-03-15 15:12:58','2025-03-15 15:12:58','2025-04-11 03:39:17'),(3,1,3123123,'2025-04-12 00:00:00','2025-04-11 03:37:45','2025-04-11 03:40:29'),(4,3,90890123,'2025-04-12 00:00:00','2025-04-11 03:43:19',NULL);
+/*!40000 ALTER TABLE `delivery` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -109,6 +139,38 @@ INSERT INTO `discount` VALUES (3,'Student',20.00,'This is for student','2025-03-
 UNLOCK TABLES;
 
 --
+-- Table structure for table `inventory`
+--
+
+DROP TABLE IF EXISTS `inventory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `inventory` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_id` int DEFAULT NULL,
+  `category_id` int DEFAULT NULL,
+  `quantity` decimal(10,2) DEFAULT NULL,
+  `cost_price` decimal(10,2) DEFAULT NULL,
+  `selling_price` decimal(10,2) DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `exp_date` tinyint DEFAULT '0',
+  `unit` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `inventory`
+--
+
+LOCK TABLES `inventory` WRITE;
+/*!40000 ALTER TABLE `inventory` DISABLE KEYS */;
+INSERT INTO `inventory` VALUES (1,46,17,100.00,12.00,12.00,'2025-04-11 20:51:14','2025-04-11 20:51:14',0,NULL);
+/*!40000 ALTER TABLE `inventory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `order`
 --
 
@@ -126,7 +188,7 @@ CREATE TABLE `order` (
   KEY `prod_id_idx` (`prod_id`),
   CONSTRAINT `cust_id` FOREIGN KEY (`cust_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `prod_id` FOREIGN KEY (`prod_id`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=115 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -135,7 +197,7 @@ CREATE TABLE `order` (
 
 LOCK TABLES `order` WRITE;
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
-INSERT INTO `order` VALUES (96,64,48,1,17.10),(97,64,49,1,226.10),(98,64,50,1,38.00),(99,64,51,1,228.00),(100,65,58,1,144.00),(101,66,48,1,17.10),(102,66,49,1,226.10),(103,66,51,1,228.00),(104,67,58,1,144.00),(105,68,48,1,17.10),(106,68,47,1,12.00),(107,69,46,1,38.00),(108,69,53,1,224.20),(109,69,52,1,228.00),(110,69,47,2,12.00);
+INSERT INTO `order` VALUES (113,72,66,1,98.00),(114,72,63,2,118.00);
 /*!40000 ALTER TABLE `order` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -158,10 +220,13 @@ CREATE TABLE `product` (
   `unit` varchar(45) DEFAULT NULL,
   `vat_percent` decimal(10,2) DEFAULT NULL,
   `orig_price` decimal(10,2) DEFAULT NULL,
+  `barcode` varchar(45) DEFAULT NULL,
+  `description` text,
+  `reason` text,
   PRIMARY KEY (`id`),
   KEY `prod_category_idx` (`prod_category`),
   CONSTRAINT `prod_category` FOREIGN KEY (`prod_category`) REFERENCES `category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -170,7 +235,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (46,'Chicken Breast',9,38.00,17,1,'2025-03-26 00:26:30','2025-03-26 00:41:09','kg',90.00,20.00),(47,'Coke',117,12.00,19,1,'2025-03-27 21:57:40',NULL,'pcs',20.00,10.00),(48,'Banana',7,17.10,21,1,'2025-03-27 22:06:14',NULL,'kg',90.00,9.00),(49,'Papaya',18,226.10,21,1,'2025-03-27 22:06:37',NULL,'kg',90.00,119.00),(50,'Potatoes',9,38.00,21,1,'2025-03-27 22:09:17',NULL,'kg',90.00,20.00),(51,'Santol',8,228.00,21,1,'2025-03-27 22:10:08',NULL,'kg',90.00,120.00),(52,'Tigh',9,228.00,17,1,'2025-03-27 22:10:33',NULL,'kg',90.00,120.00),(53,'Drum Stick',9,224.20,17,1,'2025-03-27 22:11:10',NULL,'kg',90.00,118.00),(54,'Carrot',10,228.00,18,1,'2025-03-27 22:25:20',NULL,'kg',90.00,120.00),(55,'Bear Brand',8,144.00,20,1,'2025-03-27 22:25:43',NULL,'pcs',20.00,120.00),(56,'Alaska',10,144.00,20,1,'2025-03-27 22:26:09',NULL,'pcs',20.00,120.00),(58,'Barako',6,144.00,23,1,'2025-03-27 22:28:00',NULL,'pcs',20.00,120.00);
+INSERT INTO `product` VALUES (62,'Sampe',100,11.00,18,1,'2025-04-13 00:13:54','2025-04-13 00:24:09','pcs',0.00,11.00,'','',''),(63,'Wings',8,118.00,17,1,'2025-04-13 00:40:34',NULL,'kg',0.00,118.00,'','',NULL),(64,'Beans',120,100.00,18,1,'2025-04-13 00:40:52',NULL,'pcs',0.00,100.00,'','',NULL),(65,'Alaska',130,68.00,20,1,'2025-04-13 00:41:17',NULL,'pcs',0.00,68.00,'','',NULL),(66,'Mango',19,98.00,21,1,'2025-04-13 00:41:39',NULL,'kg',0.00,98.00,'','',NULL),(67,'Carrot',100,18.00,18,1,'2025-04-13 00:42:05',NULL,'pcs',0.00,18.00,'','',NULL);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -187,10 +252,10 @@ CREATE TABLE `supplier` (
   `phone` varchar(45) DEFAULT NULL,
   `remark` text,
   `status` varchar(45) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -199,7 +264,7 @@ CREATE TABLE `supplier` (
 
 LOCK TABLES `supplier` WRITE;
 /*!40000 ALTER TABLE `supplier` DISABLE KEYS */;
-INSERT INTO `supplier` VALUES (2,'Supplier 1','0987654321','This is just a sample supplier.This is just a sample supplier.This is just a sample supplier.This is just a sample supplier.','Active','2025-03-15 15:12:58','2025-03-23 13:59:29');
+INSERT INTO `supplier` VALUES (1,'Supplier 2','0912312312','This is just a sample supplier.This is just a sample supplier.This is just a sample supplier.This is just a sample supplier.','Active','2025-03-15 15:12:58','2025-03-15 15:12:58'),(2,'Supplier 1','0987654321','This is just a sample supplier.This is just a sample supplier.This is just a sample supplier.This is just a sample supplier.','Active','2025-03-15 15:12:58','2025-03-23 13:59:29'),(3,'JB','123123123','Jollibee','active','2025-04-11 03:42:40',NULL);
 /*!40000 ALTER TABLE `supplier` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -222,7 +287,7 @@ CREATE TABLE `user` (
   `email` varchar(45) DEFAULT NULL,
   `status` varchar(45) DEFAULT 'Inactive',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -272,4 +337,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-28 18:58:17
+-- Dump completed on 2025-04-13  1:27:32

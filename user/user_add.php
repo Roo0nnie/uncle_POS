@@ -10,11 +10,10 @@ session_start();
     $username = mysqli_real_escape_string($conn, trim($_POST['username']));
     $email = mysqli_real_escape_string($conn, trim($_POST['email']));
     $role = mysqli_real_escape_string($conn, trim($_POST['role']));
-    $status = mysqli_real_escape_string($conn, trim($_POST['status']));
     $password = mysqli_real_escape_string($conn, trim($_POST['password']));
     $confirm_password = mysqli_real_escape_string($conn, trim($_POST['confirm_password']));
 
-      if(!empty($name) && !empty($last_name) && !empty($username) && !empty($email) && !empty($role) && !empty($status) && !empty($password) && !empty($confirm_password)) {
+      if(!empty($name) && !empty($last_name) && !empty($username) && !empty($email) && !empty($role) && !empty($password) && !empty($confirm_password)) {
 
         if($password !== $confirm_password) {
           $_SESSION['error_message'] = "Passwords do not match.";
@@ -26,8 +25,8 @@ session_start();
         $check_result = mysqli_query($conn, $check_sql);
 
         if ($check_result && mysqli_num_rows($check_result) == 0) {
-          $sql = "INSERT INTO user (name, last_name, username, email, role, status, password, created_at) 
-          VALUES ('$name', '$last_name', '$username', '$email', '$role', '$status', '$password', NOW())";
+          $sql = "INSERT INTO user (name, last_name, username, email, role, password, created_at) 
+          VALUES ('$name', '$last_name', '$username', '$email', '$role', '$password', NOW())";
          
           if (mysqli_query($conn, $sql)) {
             $_SESSION['success_message'] = "User added successfully.";
@@ -186,6 +185,24 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 <a href="../supplier.php">
                   <i class="fas fa-boxes"></i>
                   <p>Suppliers</p>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a  href="../delivery.php">
+                  <i class="fas fa-truck"></i>
+                  <p>Delivery</p>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a  href="../inventory.php">
+                  <i class="fas fa-boxes"></i>
+                  <p>Inventory</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  href="../sales.php">
+                  <i class="fas fa-receipt"></i>
+                  <p>Sales</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -372,17 +389,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                 <div class="mt-4">
                                     <h4 class="card-title">Email</h4>
                                     <input type="text" class="form-control" name="email" placeholder="Email">
-                                </div>
-                            </div>
-                          </div>
-                          <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
-                            <div class="numbers">
-                                <div class="mt-4">
-                                    <h4 class="card-title">Status</h4>
-                                    <select name="status" class="form-control">
-                                      <option value="active">Active</option>
-                                      <option value="inactive">Inactive</option>
-                                    </select>
                                 </div>
                             </div>
                           </div>

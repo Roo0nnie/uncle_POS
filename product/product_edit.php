@@ -21,6 +21,10 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
         $edit_unit = $row_product['unit'];
         $edit_category = $row_product['prod_category'];
         $edit_expiry = $row_product['prod_expiry'];
+        $edit_barcode = $row_product['barcode'];
+        $edit_description = $row_product['description'];
+
+
         $edit_created = $row_product['created_at'];
         $edit_updated = $row_product['updated_at'];
 
@@ -56,6 +60,8 @@ if(isset($_POST['submit'])){
     $prod_category = mysqli_real_escape_string($conn, trim($_POST['category']));
     $prod_unit = mysqli_real_escape_string($conn, trim($_POST['unit']));
     $prod_expiry = isset($_POST['expiry']) && !empty($_POST['expiry']) ? mysqli_real_escape_string($conn, trim($_POST['expiry'])) : 0;
+    $prod_barcode = mysqli_real_escape_string($conn, trim($_POST['barcode']));
+    $prod_description = mysqli_real_escape_string($conn, trim($_POST['description']));
 
   if(empty($prod_name) && !empty($prod_unit) && !empty($prod_quantity) && !empty($prod_price) && !empty($prod_category) && $prod_category != 0) {
     $_SESSION['error_message'] = "All fields are required.";
@@ -69,6 +75,9 @@ if(isset($_POST['submit'])){
     orig_price = '$prod_orig_price',
     vat_percent = '$prod_vat_price',
     prod_price = '$prod_price',
+    barcode = '$prod_barcode',
+    description = '$prod_description',
+    unit = '$prod_unit',
     prod_category = '$prod_category', ";
 
     if ($prod_expiry === 0) {
@@ -220,10 +229,28 @@ if(isset($_POST['submit'])){
                   <p>Discounts</p>
                 </a>
               </li>
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../supplier.php">
                   <i class="fas fa-boxes"></i>
                   <p>Suppliers</p>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a  href="../delivery.php">
+                  <i class="fas fa-truck"></i>
+                  <p>Delivery</p>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a  href="../inventory.php">
+                  <i class="fas fa-boxes"></i>
+                  <p>Inventory</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  href="../sales.php">
+                  <i class="fas fa-receipt"></i>
+                  <p>Sales</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -376,16 +403,33 @@ if(isset($_POST['submit'])){
                         </div>
                       </div>
 
-
-                      <div class="row g-3">
-                        <div class="col-sm-12 col-md-6">
-                          <div class="mb-4">
-                            <h4 class="card-title">Quantity</h4>
-                            <input type="number" class="form-control" name="quantity" value="<?php print $edit_quantity; ?>">
+                      <div class="row align-items-center">
+                      <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                            <div class="d-flex justify-content-between">
+                            <div class="numbers w-100 me-4">
+                                <div class="">
+                                <h4 class="card-title">Quantity</h4>
+                                <input type="number" class="form-control" name="quantity" value="<?php print $edit_quantity; ?>">
+                                </div>
+                            </div>
+                            <div class="numbers">
+                                <div class="">
+                                <h4 class="card-title">Unit</h4>
+                                <select name="unit" id="" class="form-control">
+                                  <option value="pcs" <?php if($edit_unit == 'pcs') echo 'selected'; ?>>pcs</option>
+                                  <option value="kg" <?php if($edit_unit == 'kg') echo 'selected'; ?>>kg</option>
+                                  <option value="litre" <?php if($edit_unit == 'litre') echo 'selected'; ?>>litre</option>
+                                  <option value="box" <?php if($edit_unit == 'box') echo 'selected'; ?>>box</option>
+                                  <option value="case" <?php if($edit_unit == 'case') echo 'selected'; ?>>case</option>
+                                </select>
+                                </div>
+                            </div>  
+                            </div>
                           </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                          <div class="mb-4">
+
+
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="">
                             <h4 class="card-title">Expiry Date</h4>
                             <select name="expiry" class="form-control">
                               <option value="0" <?php if($edit_expiry == 0) echo 'selected'; ?>>No</option>
@@ -394,6 +438,12 @@ if(isset($_POST['submit'])){
                           </div>
                         </div>
                       </div>
+
+
+
+                      
+
+                      
 
                       <div class="row align-items-center">
                         <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
@@ -404,8 +454,8 @@ if(isset($_POST['submit'])){
                               </div>
                           </div>
                         </div>
-                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
-                          <div class="numbers">
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0" >
+                        <div class="numbers" style="display: none;">
                               <div class="mt-4">
                               <h4 class="card-title mt-2">VAT</h4>
                               <select name="vat_price" class="form-control">
@@ -413,26 +463,56 @@ if(isset($_POST['submit'])){
                                     $sql = "SELECT * FROM `vat`";
                                     $result = mysqli_query($conn, $sql);
 
+                                    $found = false;
+
                                     while ($row = mysqli_fetch_assoc($result)) {
                                         $selected = ($edit_vat_price == $row['vat']) ? "selected" : "";
+                                        if ($edit_vat_price == $row['vat']) {
+                                            $found = true;
+                                        }
                                         echo "<option value='". $row['vat']. "' $selected>". $row['vat']. "%</option>";
+                                    }
+
+                                    if (!$found) {
+                                        $selected = ($edit_vat_price == 0) ? "selected" : "";
+                                        echo "<option value='0' $selected>0%</option>";
                                     }
                                 ?>
                             </select>
+                              </div>
+                          </div>
+                          <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                              <div class="card-title mt-2">Selling Price</div>
+                              <input type="number" name="price" class="form-control" value="<?php print $edit_price; ?>" readonly>
+                              </div>
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+
+                      <div class="row align-items-center" >
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <div class="mt-4">
+                                <h4 class="card-title">Barcode</h4>
+                                <input type="text" name="barcode" class="form-control" value="<?php print $edit_barcode; ?>">
+                                </div>
+                            </div>
+                          </div>
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                              <h4 class="card-title mt-2">Description</h4>
+                                <textarea name="description" class="form-control" placeholder="Description"><?php print $edit_description; ?></textarea>
                               </div>
                           </div>
                         </div>
                       </div>
 
                       <div class="row align-items-center">
-                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
-                          <div class="numbers">
-                              <div class="mt-4">
-                              <h4 class="card-title mt-2">Selling Price</h4>
-                              <input type="number" name="price" class="form-control" value="<?php print $edit_price; ?>" readonly>
-                              </div>
-                          </div>
-                        </div>
+                       
                       </div>
 
                       <div class="row g-3">
@@ -518,7 +598,7 @@ if(isset($_POST['submit'])){
     <script src="../assets/js/admin.min.js"></script>
 
     <script src="../assets/js/setting-demo.js"></script>
-    <script src="../assets/js/product.js"></script>
+    <script src="../assets/js/product.js?<?php echo time(); ?>"></script>
   </body>
 </html>
 <?php

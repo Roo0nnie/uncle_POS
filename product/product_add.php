@@ -12,6 +12,8 @@ session_start();
     $prod_category = mysqli_real_escape_string($conn, trim($_POST['category']));
     $prod_expiry = mysqli_real_escape_string($conn, trim($_POST['expiry']));
     $prod_unit = mysqli_real_escape_string($conn, trim($_POST['unit']));
+    $prod_description = mysqli_real_escape_string($conn, trim($_POST['description']));
+    $prod_barcode = mysqli_real_escape_string($conn, trim($_POST['barcode']));
 
     if(!empty($prod_name) && !empty($prod_unit) && !empty($prod_quantity) && !empty($prod_price) && !empty($prod_category) && $prod_category != 0) {
 
@@ -20,8 +22,8 @@ session_start();
 
         if ($check_result && mysqli_num_rows($check_result) == 0) { 
 
-          $sql = "INSERT INTO product (unit, prod_name, prod_quantity, prod_price, prod_category, prod_expiry,orig_price, vat_percent,  created_at) 
-          VALUES ('$prod_unit','$prod_name', '$prod_quantity', '$prod_price', '$prod_category', ".($prod_expiry === null ? "0" : "1")." , '$prod_orig_price'  , '$prod_vat_price' ,    NOW())";
+          $sql = "INSERT INTO product (unit, prod_name, prod_quantity, prod_price, prod_category, prod_expiry,orig_price, vat_percent,  created_at, description, barcode) 
+          VALUES ('$prod_unit','$prod_name', '$prod_quantity', '$prod_price', '$prod_category', ".($prod_expiry === null ? "0" : "1")." , '$prod_orig_price'  , '$prod_vat_price' ,    NOW(), '$prod_description', '$prod_barcode')";
          
           if (mysqli_query($conn, $sql)) {
             $_SESSION['error_message'] = "Product added successfully.";
@@ -175,10 +177,28 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   <p>Discounts</p>
                 </a>
               </li>
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../supplier.php">
                   <i class="fas fa-boxes"></i>
                   <p>Suppliers</p>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a  href="../delivery.php">
+                  <i class="fas fa-truck"></i>
+                  <p>Delivery</p>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a  href="../inventory.php">
+                  <i class="fas fa-boxes"></i>
+                  <p>Inventory</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  href="../sales.php">
+                  <i class="fas fa-receipt"></i>
+                  <p>Sales</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -364,7 +384,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                 </div>
                             </div>  
                             </div>
-                            
                           </div>
 
                           <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
@@ -380,17 +399,17 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                         </div>
                         </div>
 
-                        <div class="row align-items-center">
+                      <div class="row align-items-center">
                         <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
-                          <div class="numbers">
-                              <div class="mt-4">
-                              <h4 class="card-title">Original Price</h4>
-                              <input type="number" name="orig_price" class="form-control" value="0">
-                              </div>
+                            <div class="numbers">
+                                <div class="mt-4">
+                                <h4 class="card-title">Original Price</h4>
+                                <input type="number" name="orig_price" class="form-control" value="0">
+                                </div>
+                            </div>
                           </div>
-                        </div>
                         <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
-                          <div class="numbers">
+                          <div class="numbers"  style="display: none;">
                               <div class="mt-4">
                               <h4 class="card-title mt-2">VAT</h4>
                                 <select name="vat_price" class="form-control">
@@ -405,11 +424,8 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                 </select>
                               </div>
                           </div>
-                        </div>
-                      </div>
 
-                      <div class="row align-items-center">
-                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
                           <div class="numbers">
                               <div class="mt-4">
                               <h4 class="card-title mt-2">Selling Price</h4>
@@ -417,6 +433,30 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                               </div>
                           </div>
                         </div>
+                        </div>
+                      </div>
+
+                      <div class="row align-items-center">
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <div class="mt-4">
+                                <h4 class="card-title">Barcode</h4>
+                                <input type="text" name="barcode" class="form-control" placeholder="Barcode">
+                                </div>
+                            </div>
+                          </div>
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                              <h4 class="card-title mt-2">Description</h4>
+                                <textarea name="description" class="form-control" placeholder="Description"></textarea>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row align-items-center">
+                       
                       </div>
 
 
@@ -486,7 +526,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 
     <script src="../assets/js/setting-demo.js"></script>
     <script src="../assets/js/demo.js"></script>
-    <script src="../assets/js/product.js"></script>
+    <script src="../assets/js/product.js?<?php echo time(); ?>"></script>
   </body>
 </html>
 <?php

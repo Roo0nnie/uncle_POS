@@ -2,63 +2,53 @@
 include '../php/db_conn.php';
 session_start();
 
-if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
-  if(isset($_GET['id'])){
+  if(isset($_POST['submit'])) {
 
-    $id = mysqli_real_escape_string($conn, $_GET['id']);
-    $sql_supplier = "SELECT * FROM `supplier` WHERE id = '$id'";
-    $result_supplier = mysqli_query($conn, $sql_supplier);
+    $prod_name = mysqli_real_escape_string($conn, trim($_POST['name']));
+    $prod_quantity = mysqli_real_escape_string($conn, trim($_POST['quantity']));
+    $prod_price = mysqli_real_escape_string($conn, trim($_POST['price']));
+    $prod_orig_price = mysqli_real_escape_string($conn, trim($_POST['orig_price']));
+    $prod_vat_price = mysqli_real_escape_string($conn, trim($_POST['vat_price']));
+    $prod_category = mysqli_real_escape_string($conn, trim($_POST['category']));
+    $prod_expiry = mysqli_real_escape_string($conn, trim($_POST['expiry']));
+    $prod_unit = mysqli_real_escape_string($conn, trim($_POST['unit']));
+    $prod_description = mysqli_real_escape_string($conn, trim($_POST['description']));
+    $prod_barcode = mysqli_real_escape_string($conn, trim($_POST['barcode']));
 
-    if ($result_supplier && mysqli_num_rows($result_supplier) > 0) {
+    if(!empty($prod_name) && !empty($prod_unit) && !empty($prod_quantity) && !empty($prod_price) && !empty($prod_category) && $prod_category != 0) {
 
-        $row_supplier = mysqli_fetch_assoc($result_supplier);
-        $edit_id = $row_supplier['id'];
-        $edit_name = $row_supplier['sup_name'];
-        $edit_phone = $row_supplier['phone'];
-        $edit_remark = $row_supplier['remark'];
-        $edit_status = $row_supplier['status'];
-        $edit_created = $row_supplier['created_at'];
-        $edit_updated = $row_supplier['updated_at'];
+        $check_sql = "SELECT * FROM `product` WHERE prod_name = '$prod_name'";
+        $check_result = mysqli_query($conn, $check_sql);
 
+        if ($check_result && mysqli_num_rows($check_result) == 0) { 
+
+          $sql = "INSERT INTO product (unit, prod_name, prod_quantity, prod_price, prod_category, prod_expiry,orig_price, vat_percent,  created_at, description, barcode) 
+          VALUES ('$prod_unit','$prod_name', '$prod_quantity', '$prod_price', '$prod_category', ".($prod_expiry === null ? "0" : "1")." , '$prod_orig_price'  , '$prod_vat_price' ,    NOW(), '$prod_description', '$prod_barcode')";
+         
+          if (mysqli_query($conn, $sql)) {
+            $_SESSION['error_message'] = "Product added successfully.";
+            header("Location: ../product.php");
+            exit();
+          } else {
+            $_SESSION['error_message'] = "Failed to add product.";
+            header("Location: ./product_add.php");
+            exit();
+          }
+
+        } else {
+          $_SESSION['error_message'] = "Category already exists.";
+          header("Location: ./product_add.php");
+          exit();
+      }
     } else {
-      $_SESSION['error_message'] = "No category id found!.";
-      header("Location: ../category.php");
+      $_SESSION['error_message'] = "All fields are required";
+      header("Location: ./product_add.php");
       exit();
-    }
-} else {
-  $_SESSION['error_message'] = "No ID provided in the URL.";
-  header("Location: ../category.php");
-  exit();
-}
-
-if(isset($_POST['submit'])){
-  
-    $sup_id = mysqli_real_escape_string($conn, trim($_POST['id']));
-    $sup_name = mysqli_real_escape_string($conn, trim($_POST['name']));
-    $sup_phone = mysqli_real_escape_string($conn, trim($_POST['phone']));
-    $sup_remark = mysqli_real_escape_string($conn, trim($_POST['remark']));
-    $sup_status = mysqli_real_escape_string($conn, trim($_POST['status']));
-
-    $sql_supplier = "UPDATE supplier SET 
-    sup_name = '$sup_name',
-    phone = '$sup_phone',
-    remark = '$sup_remark',
-    status = '$sup_status', ";
-
-    $sql_supplier .= "updated_at = now()
-        WHERE id = '$sup_id'";
-
-  if(mysqli_query($conn, $sql_supplier)){
-    $_SESSION['error_message'] = "Updated supplier successfully!.";
-    header("Location: ../supplier.php");
-    exit();
-  } else {
-    $_SESSION['error_message'] = "Could not update record: ". mysqli_error($conn);
-    header("Location: ../supplier.php");
-    exit();
   }
+  mysqli_close($conn);
 }
 
+if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -67,7 +57,7 @@ if(isset($_POST['submit'])){
     <title>Inventory System</title>
     <meta
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-      name="editport"
+      name="viewport"
     />
     <link
       rel="icon"
@@ -153,21 +143,21 @@ if(isset($_POST['submit'])){
                   <p>Users</p>
                 </a>
               </li>
-              <li class="nav-item ">
+              <li class="nav-item active">
                 <a href="../product.php">
                   <i class="fas fa-boxes"></i>
                   <p>Products</p>
                 </a>
               </li>
 
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../category.php">
                 <i class="fas fa-folder"></i>  
                   <p>Categories</p>
                 </a>
               </li>
              
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../orders.php">
                   <i class="fas fa-shopping-cart"></i>
                   <p>Orders</p>
@@ -181,13 +171,13 @@ if(isset($_POST['submit'])){
                 </a>
               </li>
 
-              <li class="nav-item ">
+              <li class="nav-item">
                 <a href="../discount.php">
                 <i class="fas fa-percentage"></i>
                   <p>Discounts</p>
                 </a>
               </li>
-              <li class="nav-item active">
+              <li class="nav-item">
                 <a href="../supplier.php">
                   <i class="fas fa-boxes"></i>
                   <p>Suppliers</p>
@@ -269,7 +259,7 @@ if(isset($_POST['submit'])){
                       />
                     </div>
                     <span class="profile-username">
-                      <span class="fw-bold">Admin</span>
+                    <span class="fw-bold"><?php print $_SESSION['name'] ?> <?php print $_SESSION['last_name'] ?></span>
                     </span>
                   </a>
                   <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -284,7 +274,7 @@ if(isset($_POST['submit'])){
                             />
                           </div>
                           <div class="u-text">
-                            <h4>Admin</h4>
+                            <h4><?php print $_SESSION['name'] ?> <?php print $_SESSION['last_name'] ?></h4>
                             <p class="text-muted">sample@gmail.com</p>
                           
                           </div>
@@ -305,101 +295,184 @@ if(isset($_POST['submit'])){
 
         <div class="container">
           <div class="page-inner">
-            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between pt-2 pb-4">
+            <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
               <div>
-                <h3 class="fw-bold mb-3">Edit supplier</h3>
+                <h3 class="fw-bold mb-3">Add Product</h3>
                 <div class="page-header">
                   <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
-                      <a href="#"><i class="icon-home"></i></a>
+                      <a href="#">
+                        <i class="icon-home"></i>
+                      </a>
                     </li>
-                    <li class="separator"><i class="icon-arrow-right"></i></li>
+                    <li class="separator">
+                      <i class="icon-arrow-right"></i>
+                    </li>
                     <li class="nav-item">
-                      <a href="#">supplier</a>
+                      <a href="#">Product</a>
                     </li>
-                    <li class="separator"><i class="icon-arrow-right"></i></li>
-                    <li class="nav-item">
-                      <a href="#">Edit supplier</a>
-                    </li>
+                    <li class="separator">
+                        <i class="icon-arrow-right"></i>
+                      </li>
+                      <li class="nav-item">
+                        <a href="#">Add Product</a>
+                      </li>
                   </ul>
                 </div>
               </div>
             </div>
-
             <form action="" method="post">
-              <input type="hidden" value="<?php print $edit_id; ?>" name="id">
+              <?php
+                  if (isset($_SESSION['error_message'])) {
+                      echo "<p>" . $_SESSION['error_message'] . "</p>";
+                      unset($_SESSION['error_message']); 
+                  }
+                  ?>
               <div class="row">
-                <div class="col-12">
+                <div class="col-sm-12 col-md-12">
                   <div class="card card-stats card-round">
                     <div class="card-body">
-                      <p class="card-category fw-bold">supplier Information</p>
-
-                      <div class="row g-3">
-                        <div class="col-sm-12 col-md-6">
-                          <div class="mb-4">
-                            <h4 class="card-title">Supplier Name</h4>
-                            <input type="text" class="form-control" name="name" placeholder="supplier name" value="<?php print $edit_name; ?>">
+                      <div class="row align-items-center">
+                          <p class="card-category">Product Information</p>
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                                  <h4 class="card-title">Product Name</h4>
+                                  <input type="text" class="form-control" name="name" placeholder="Product name">
+                              </div>
                           </div>
                         </div>
-                        <div class="col-sm-12 col-md-6">
-                          <div class="mb-4">
-                          <h4 class="card-title">Quantity</h4>
-                          <input type="text" class="form-control" name="phone" value="<?php print $edit_phone; ?>">
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="row g-3">
-                        <div class="col-sm-12 col-md-6">
-                          <div class="mb-4">
-                            <h4 class="card-title">Status</h4>
-                            <select name="status" class="form-control">
-                              <option value="Active" <?php echo ($edit_status == 'Active') ? 'selected' : ''; ?>>Active</option>
-                              <option value="Inactive" <?php echo ($edit_status == 'Inactive') ? 'selected' : ''; ?>>Inactive</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                          <div class="mb-4">
-                            <h4 class="card-title">Remark</h4>
-                            <textarea class="form-control" name="remark"><?php echo htmlspecialchars($edit_remark); ?></textarea>
-                          </div>
-                        </div>
-                      </div>
-                                  
-                      <div class="row g-3">
-                        <div class="col-sm-12 col-md-6">
-                          <div class="mb-4">
-                            <h4 class="card-title">Created</h4>
-                            <input type="datetime" class="form-control" value="<?php echo $edit_created; ?>" readonly>
-                          </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                          <div class="mb-4">
-                            <h4 class="card-title">Updated</h4>
-                            <input type="datetime" class="form-control" value="<?php echo $edit_updated; ?>" readonly>
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                                  <h4 class="card-title">Category</h4>
+                                  <select name="category" class="form-control">
+                                    <?php 
+                                      $sql = "SELECT * FROM  `category`";
+                                      $result = mysqli_query($conn, $sql);
+                                     echo "<option value='0'>Select Category</option>";
+                                      while ($row = mysqli_fetch_assoc($result)) {
+                                        echo "<option value='". $row['id']. "'>". $row['name']. "</option>";
+                                     }
+                                    ?>
+                                  </select>
+                              </div>
                           </div>
                         </div>
                       </div>
 
+
+                      <div class="row align-items-center">
+                          <div class="col-sm-12 col-md-6">
+                            <div class="d-flex justify-content-between">
+                            <div class="numbers w-100 me-4">
+                                <div class="mt-4">
+                                    <h4 class="card-title">Quantity</h4>
+                                    <input type="number" class="form-control" name="quantity" value="0" >
+                                </div>
+                            </div>
+                            <div class="numbers">
+                                <div class="mt-4">
+                                    <h4 class="card-title">Unit</h4>
+                                    <select name="unit" id="" class="form-control">
+                                      <option value="pcs">pcs</option>
+                                      <option value="kg">kg</option>
+                                      <option value="litre">litre</option>
+                                      <option value="box">box</option>
+                                      <option value="case">case</option>
+                                    </select>
+                                </div>
+                            </div>  
+                            </div>
+                          </div>
+
+                          <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                                  <h4 class="card-title">Expiry Date</h4>
+                                  <input type="radio" id="expiry-yes" name="expiry" value="1" class="form-check-input">
+                                  <label for="expiry-yes">Yes</label>
+                                  <input type="radio" id="expiry-no" name="expiry" value="0" class="form-check-input">
+                                  <label for="expiry-no">No</label>
+                              </div>
+                          </div>
+                        </div>
+                        </div>
+
+                      <div class="row align-items-center">
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <div class="mt-4">
+                                <h4 class="card-title">Original Price</h4>
+                                <input type="number" name="orig_price" class="form-control" value="0">
+                                </div>
+                            </div>
+                          </div>
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0" style="display: none;">
+                          <div class="numbers">
+                              <div class="mt-4">
+                              <h4 class="card-title mt-2">VAT</h4>
+                                <select name="vat_price" class="form-control">
+                                    <option value="0">0%</option>
+                                    <?php 
+                                        $sql = "SELECT * FROM `vat`";
+                                        $result = mysqli_query($conn, $sql);
+                                        while ($row = mysqli_fetch_assoc($result)) {
+                                            echo "<option value='". $row['vat']. "'>". $row['vat']. "%</option>";
+                                        }
+                                    ?>
+                                </select>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row align-items-center">
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                            <div class="numbers">
+                                <div class="mt-4">
+                                <h4 class="card-title">Barcode</h4>
+                                <input type="text" name="barcode" class="form-control" placeholder="Barcode">
+                                </div>
+                            </div>
+                          </div>
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                              <h4 class="card-title mt-2">Description</h4>
+                                <textarea name="description" class="form-control" placeholder="Description"></textarea>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row align-items-center">
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                              <h4 class="card-title mt-2">Selling Price</h4>
+                              <input type="number" name="price" class="form-control" value="0" readonly>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <!--  -->
+                      </div>
                     </div>
                   </div>
+                    <div class="ms-md-auto py-2 py-md-0">
+                      <button type="submit" name="submit" class="btn btn-primary ">
+                        <i class="fas fa-cart-plus"></i> Add Product
+                      </button>
+                       <a href="../product.php" class="btn btn-secondary ">Back</a>
+                    </div>
                 </div>
-              </div>
-
-              <div class="text-start mt-3">
-                  <div class="ms-md-auto py-2 py-md-0">
-                    <button type="submit" name="submit" class="btn btn-primary ">
-                        <i class="fas fa-cart-plus"></i> Update supplier
-                    </button>
-                    <a href="../supplier.php" class="btn btn-secondary ">Back</a>
-                      </div>
-                  </div>
               </div>
             </form>
           </div>
-</div>
-
+        </div>
 
         <footer class="footer">
           <div class="container-fluid d-flex justify-content-between">
@@ -451,12 +524,12 @@ if(isset($_POST['submit'])){
 
     <script src="../assets/js/setting-demo.js"></script>
     <script src="../assets/js/demo.js"></script>
+    <script src="../assets/js/product.js?<?php echo time(); ?>"></script>
   </body>
 </html>
 <?php
 } else {
-  $_SESSION['error_message'] = "You have to login first.";
-  header("Location: ../index.php");
-  exit();
+    header("Location: index.php");
+    exit();
 }
 ?>

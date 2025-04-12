@@ -135,21 +135,21 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   <p>Users</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a href="../product.php">
                   <i class="fas fa-boxes"></i>
                   <p>Products</p>
                 </a>
               </li>
 
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a href="../category.php">
                 <i class="fas fa-folder"></i>  
                   <p>Categories</p>
                 </a>
               </li>
              
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a href="../orders.php">
                   <i class="fas fa-shopping-cart"></i>
                   <p>Orders</p>
@@ -173,6 +173,24 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                 <a href="../supplier.php">
                   <i class="fas fa-boxes"></i>
                   <p>Suppliers</p>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a  href="../delivery.php">
+                  <i class="fas fa-truck"></i>
+                  <p>Delivery</p>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a  href="../inventory.php">
+                  <i class="fas fa-boxes"></i>
+                  <p>Inventory</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a  href="../sales.php">
+                  <i class="fas fa-receipt"></i>
+                  <p>Sales</p>
                 </a>
               </li>
               <li class="nav-item">
