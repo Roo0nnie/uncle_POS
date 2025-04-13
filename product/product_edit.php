@@ -485,7 +485,7 @@ if(isset($_POST['submit'])){
                           <div class="numbers">
                               <div class="mt-4">
                               <div class="card-title mt-2">Selling Price</div>
-                              <input type="number" name="price" class="form-control" value="<?php print $edit_price; ?>" readonly>
+                              <input type="number" name="price" class="form-control" value="<?php print $edit_price; ?>" >
                               </div>
                           </div>
                         </div>

@@ -429,7 +429,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                           <div class="numbers">
                               <div class="mt-4">
                               <h4 class="card-title mt-2">Selling Price</h4>
-                              <input type="number" name="price" class="form-control" value="0" readonly>
+                              <input type="number" name="price" class="form-control" value="0" >
                               </div>
                           </div>
                         </div>

@@ -71,6 +71,9 @@ if(isset($_POST['submit'])){
     exit();
   }
 
+
+  echo $prod_quantity;
+
     $sql_product = "UPDATE product SET 
     prod_name = '$prod_name',
     prod_quantity = '$prod_quantity',
@@ -488,7 +491,7 @@ if(isset($_POST['submit'])){
                           <div class="numbers">
                               <div class="mt-4">
                               <h4 class="card-title mt-2">Selling Price</h4>
-                              <input type="number" name="price" class="form-control" value="<?php print $edit_price; ?>" readonly>
+                              <input type="number" name="price" class="form-control" value="<?php print $edit_price; ?>" >
                               </div>
                           </div>
                         </div>

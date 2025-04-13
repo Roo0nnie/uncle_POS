@@ -2,12 +2,13 @@
 include './php/db_conn.php';
 session_start();
 
+$transactionId = 'TXN-' . strtoupper(uniqid());
+
 if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Inventory System</title>
     <meta
@@ -22,20 +23,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 
       <!-- Ensure Bootstrap and DataTables CSS are included -->
       <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-
-    <!-- Include jQuery, DataTables, and Buttons JS -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-
-    <!-- Ensure Bootstrap and DataTables CSS are included -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
 
@@ -99,7 +86,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
         </div>
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
-          <ul class="nav nav-secondary">
+            <ul class="nav nav-secondary">
               <li class="nav-item">
                 <a href="dashboard.php">
                   <i class="fas fa-home"></i>
@@ -158,13 +145,13 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   <p>Suppliers</p>
                 </a>
               </li>
-              <li class="nav-item active">
+              <li class="nav-item active ">
                 <a  href="delivery.php">
                   <i class="fas fa-truck"></i>
                   <p>Delivery</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item ">
                 <a  href="inventory.php">
                   <i class="fas fa-boxes"></i>
                   <p>Inventory</p>
@@ -216,21 +203,63 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
             <!-- End Logo Header -->
           </div>
           <!-- Navbar Header -->
-          <?php include 'nav.php'; ?>
+          <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+            <div class="container-fluid">
+              <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+                <li class="nav-item topbar-user dropdown hidden-caret">
+                  <a
+                    class="dropdown-toggle profile-pic"
+                    data-bs-toggle="dropdown"
+                    href="#"
+                    aria-expanded="false"
+                  >
+                    <div class="avatar-sm">
+                      <img
+                        src="assets/img/profile.png"
+                        alt="..."
+                        class="avatar-img rounded-circle"
+                      />
+                    </div>
+                    <span class="profile-username">
+                    <span class="fw-bold"><?php print $_SESSION['name'] ?> <?php print $_SESSION['last_name'] ?></span>
+                    </span>
+                  </a>
+                  <ul class="dropdown-menu dropdown-user animated fadeIn">
+                    <div class="dropdown-user-scroll scrollbar-outer">
+                      <li>
+                        <div class="user-box">
+                          <div class="avatar-lg">
+                            <img
+                              src="assets/img/profile.jpg"
+                              alt="image profile"
+                              class="avatar-img rounded"
+                            />
+                          </div>
+                          <div class="u-text">
+                            <h4><?php print $_SESSION['name'] ?> <?php print $_SESSION['last_name'] ?></h4>
+                            <p class="text-muted">sample@gmail.com</p>
+                          
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="index.php">Logout</a>
+                      </li>
+                    </div>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </nav>
           <!-- End Navbar -->
         </div>
 
         <div class="container">
           <div class="page-inner">
-          <?php
-            if (isset($_SESSION['error_message'])) {
-                echo "<p>" . $_SESSION['error_message'] . "</p>";
-                unset($_SESSION['error_message']); 
-            }
-          ?>
             <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
               <div>
-                <h3 class="fw-bold mb-3">Delivery Management</h3>
+                <h3 class="fw-bold mb-3">Deliver Section</h3>
                 <div class="page-header">
                   <ul class="breadcrumbs mb-3">
                     <li class="nav-home">
@@ -247,136 +276,72 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                   </ul>
                 </div>
               </div>
-              <div class="ms-md-auto py-2 py-md-0">
-                <a href="./delivery/delivery_add.php" class="btn btn-primary "><i class="fas fa-cart-plus"></i> Add Delivery</a>
-              </div>
             </div>
-            <div class="row">
-              <div class="col-sm-6 col-md-6">
-                <div class="card card-stats card-round">
-                  <div class="card-body">
-                    <div class="row align-items-center">
-                      <div class="col-icon">
-                        <div
-                          class="icon-big text-center icon-primary bubble-shadow-small"
-                        >
-                          <i class="fas fa-boxes"></i>
+            <form action="./inventory/inventory_add.php" method="get">
+              <?php
+                  if (isset($_SESSION['error_message'])) {
+                      echo "<p>" . $_SESSION['error_message'] . "</p>";
+                      unset($_SESSION['error_message']); 
+                  }
+                  ?>
+              <div class="row">
+                <div class="col-sm-12 col-md-12">
+                  <div class="card card-stats card-round">
+                    <div class="card-body">
+                      <div class="row align-items-center">
+                          <p class="card-category">Delivery Information</p>
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                                  <h4 class="card-title">Supplier</h4>
+                                  <select name="sup_id" class="form-control" required>
+                                    <?php 
+                                      $sql = "SELECT * FROM `supplier`";
+                                      $result = mysqli_query($conn, $sql);
+                                     echo "<option value='0'>Select Supplier</option>";
+                                      while ($row = mysqli_fetch_assoc($result)) {
+                                        echo "<option value='". $row['id']. "'>". $row['sup_name']. "</option>";
+                                     }
+                                    ?>
+                                  </select>
+                              </div>
+                          </div>
                         </div>
                       </div>
-                      <div class="col col-stats ms-3 ms-sm-0">
-                        <div class="numbers">
-                          <p class="card-category">Total Delivery</p>
-                          <h4 class="card-title">
-                            <?php 
-                              $sql = "SELECT COUNT(*) FROM delivery";
-                              $result = mysqli_query($conn, $sql);
-                              $row = mysqli_fetch_array($result);
 
-                              if ($row[0] != NULL) {
-                                echo $row[0];
-                              }
-                              else {
-                                echo "No delivery available";
-                              }
-                           ?>
-                          </h4>
+
+                      <div class="row align-items-center">
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                              <h4 class="card-title mt-2">Transaction ID</h4>
+                              <input type="text" name="trans_id" class="form-control" value="<?php echo $transactionId; ?>" readonly >
+                              </div>
+                          </div>
                         </div>
+                      </div>
+
+                      <div class="row align-items-center">
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                              <h4 class="card-title mt-2">Date</h4>
+                              <input type="date" name="del_date" class="form-control" >
+                              </div>
+                          </div>
+                        </div>
+                      </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-md-6">
-                <div class="card card-stats card-round">
-                  <div class="card-body">
-                    <div class="row align-items-center">
-                      <div class="col-icon">
-                        <div
-                          class="icon-big text-center icon-success bubble-shadow-small"
-                        >
-                          <i class="fas fa-dollar-sign"></i>
-                        </div>
-                      </div>
-                      <div class="col col-stats ms-3 ms-sm-0">
-                        <div class="numbers">
-                          <p class="card-category">Total Quantity of Delivery</p>
-                          <h4 class="card-title">
-                            <?php
-                            
-                            
-                            ?>
-
-                          </h4>
-                        </div>
-                      </div>
+                    <div class="ms-md-auto py-2 py-md-0">
+                      <button type="submit" name="submit" class="btn btn-primary ">
+                        <i class="fas fa-truck"></i> Proceed
+                      </button>
                     </div>
-                  </div>
                 </div>
               </div>
-            </div>
-            
-            <div class="row">
-              <div class="col-md-12">
-                <div class="card">
-                  <div class="card-header">
-                    <h4 class="card-title">Delivery List</h4>
-                  </div>
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table id="multi-filter-select" class="display table table-striped table-hover">
-                      <thead>
-                          <tr>
-                            <th>Supplier</th>
-                            <th>Transaction ID</th>
-                            <th>Date</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        <?php
-                            $sql = "Select * from `delivery`";
-
-                            $result = mysqli_query($conn, $sql);
-                            $id_loop = 0;
-                            if ($result) {
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                    $id = $row['id'];
-                                    $sup_id = $row['sup_id'];
-                                    $tran_id = $row['trans_id'];
-                                    $del_date = $row['del_date'];
-                                    $id_loop += 1;
-
-                                    $sql_supplier = "SELECT * FROM `supplier` WHERE id = $sup_id";
-                                    $result_supplier = mysqli_query($conn, $sql_supplier);
-                                    $row_supplier = mysqli_fetch_assoc($result_supplier);
-                                    if ($result_supplier && mysqli_num_rows($result_supplier) > 0) {
-                                        $view_name = $row_supplier['sup_name'];
-                                    } else {
-                                        $view_name = 'Unknown'; 
-                                    }
-
-                                    echo '<tr>
-                                    <td>' . $view_name . '</td>
-                                    <td>'. $tran_id .'</td>
-                                    <td>'. $del_date .'</td>
-                                    <td>
-                                        <a href="./delivery/delivery_view.php?id='. $id . '" class="btn btn-info btn-sm">View</a>
-                                        <a href="./delivery/delete.php?id=' . $id . '" class="btn btn-danger btn-sm">Delete</a>
-                                        <a href="./delivery/delivery_edit.php?id='. $id . '" class="btn btn-warning btn-sm">Edit</a>
-                                    </td>
-                                </tr>';
-                            ?>
-                            <?php
-                                }
-                            }
-                            ?>  
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            </form>
           </div>
         </div>
 
@@ -430,25 +395,9 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 
     <script src="assets/js/setting-demo.js"></script>
     <script src="assets/js/demo.js"></script>
-
-    
-    <!-- Include jQuery, DataTables, and Buttons JS -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script>
-      
-      $("#multi-filter-select").DataTable({
-          pageLength: 5,
-        });
-    </script>
+    <script src="assets/js/product.js"></script>
   </body>
 </html>
-
 <?php
 } else {
     header("Location: index.php");
