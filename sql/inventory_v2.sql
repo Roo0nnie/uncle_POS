@@ -81,36 +81,6 @@ INSERT INTO `customer` VALUES (63,'Customer 1',NULL,NULL,NULL,'2025-03-18',NULL,
 UNLOCK TABLES;
 
 --
--- Table structure for table `delivery`
---
-
-DROP TABLE IF EXISTS `delivery`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `delivery` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `sup_id` int DEFAULT NULL,
-  `trans_id` int DEFAULT NULL,
-  `del_date` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `sup_id_idx` (`sup_id`),
-  CONSTRAINT `sup_id` FOREIGN KEY (`sup_id`) REFERENCES `supplier` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `delivery`
---
-
-LOCK TABLES `delivery` WRITE;
-/*!40000 ALTER TABLE `delivery` DISABLE KEYS */;
-INSERT INTO `delivery` VALUES (1,1,9123123,'2025-03-15 15:12:58','2025-03-15 15:12:58','2025-04-11 03:39:17'),(3,1,3123123,'2025-04-12 00:00:00','2025-04-11 03:37:45','2025-04-11 03:40:29'),(4,3,90890123,'2025-04-12 00:00:00','2025-04-11 03:43:19',NULL);
-/*!40000 ALTER TABLE `delivery` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `discount`
 --
 
@@ -223,8 +193,12 @@ CREATE TABLE `product` (
   `barcode` varchar(45) DEFAULT NULL,
   `description` text,
   `reason` text,
+  `sup_id` int DEFAULT NULL,
+  `del_date` datetime DEFAULT NULL,
+  `trans_id` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `prod_category_idx` (`prod_category`),
+  KEY `sup_id_idx` (`sup_id`),
   CONSTRAINT `prod_category` FOREIGN KEY (`prod_category`) REFERENCES `category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -235,7 +209,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (62,'Sampe',100,11.00,18,1,'2025-04-13 00:13:54','2025-04-13 00:24:09','pcs',0.00,11.00,'','',''),(63,'Wings',8,118.00,17,1,'2025-04-13 00:40:34',NULL,'kg',0.00,118.00,'','',NULL),(64,'Beans',120,100.00,18,1,'2025-04-13 00:40:52',NULL,'pcs',0.00,100.00,'','',NULL),(65,'Alaska',130,68.00,20,1,'2025-04-13 00:41:17',NULL,'pcs',0.00,68.00,'','',NULL),(66,'Mango',19,98.00,21,1,'2025-04-13 00:41:39',NULL,'kg',0.00,98.00,'','',NULL),(67,'Carrot',100,18.00,18,1,'2025-04-13 00:42:05',NULL,'pcs',0.00,18.00,'','',NULL);
+INSERT INTO `product` VALUES (62,'Sampe',100,11.00,18,1,'2025-04-13 00:13:54','2025-04-13 00:24:09','pcs',0.00,11.00,'','','',NULL,NULL,NULL),(63,'Wings',8,118.00,17,1,'2025-04-13 00:40:34','2025-04-13 14:52:17','kg',0.00,118.00,'','',NULL,NULL,NULL,NULL),(64,'Beans',100,100.00,18,1,'2025-04-13 00:40:52','2025-04-13 15:13:42','pcs',0.00,100.00,'','','',2,'2025-04-16 00:00:00','TXN-67FB60FDDC88E'),(65,'Alaska',130,65.00,20,1,'2025-04-13 00:41:17','2025-04-13 14:44:56','pcs',0.00,65.00,'','','',NULL,NULL,NULL),(66,'Mango',100,200.00,21,0,'2025-04-13 00:41:39','2025-04-13 15:13:56','kg',0.00,108.00,'','','',3,'2025-04-16 00:00:00','TXN-67FB62FC87D1B'),(67,'Carrot',100,18.00,18,1,'2025-04-13 00:42:05',NULL,'pcs',0.00,18.00,'','',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -337,4 +311,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-13  1:27:32
+-- Dump completed on 2025-04-13 15:16:59

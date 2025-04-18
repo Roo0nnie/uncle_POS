@@ -403,7 +403,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                         <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
                             <div class="numbers">
                                 <div class="mt-4">
-                                <h4 class="card-title">Original Price</h4>
+                                <h4 class="card-title">Cost Price</h4>
                                 <input type="number" name="orig_price" class="form-control" value="0">
                                 </div>
                             </div>

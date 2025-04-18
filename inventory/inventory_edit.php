@@ -16,7 +16,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
         $edit_name = $row_product['prod_name'];
         $edit_quantity = $row_product['prod_quantity'];
         $edit_orig_price = $row_product['orig_price'];
-        $edit_vat_price = $row_product['vat_percent'];
+        $edit_vat_percent = $row_product['vat_percent'];
         $edit_price = $row_product['prod_price'];
         $edit_unit = $row_product['unit'];
         $edit_category = $row_product['prod_category'];
@@ -56,7 +56,7 @@ if(isset($_POST['submit'])){
     $prod_name = mysqli_real_escape_string($conn, trim($_POST['name']));
     $prod_quantity = mysqli_real_escape_string($conn, trim($_POST['quantity']));
     $prod_orig_price = mysqli_real_escape_string($conn, trim($_POST['orig_price']));
-    $prod_vat_price = mysqli_real_escape_string($conn, trim($_POST['vat_price']));
+    $prod_vat_percent = mysqli_real_escape_string($conn, trim($_POST['vat_percent']));
     $prod_price = mysqli_real_escape_string($conn, trim($_POST['price']));
     $prod_category = mysqli_real_escape_string($conn, trim($_POST['category']));
     $prod_unit = mysqli_real_escape_string($conn, trim($_POST['unit']));
@@ -78,7 +78,7 @@ if(isset($_POST['submit'])){
     prod_name = '$prod_name',
     prod_quantity = '$prod_quantity',
     orig_price = '$prod_orig_price',
-    vat_percent = '$prod_vat_price',
+    vat_percent = '$prod_vat_percent',
     prod_price = '$prod_price',
     barcode = '$prod_barcode',
     description = '$prod_description',
@@ -386,13 +386,13 @@ if(isset($_POST['submit'])){
                         <div class="col-sm-12 col-md-6">
                           <div class="mb-4">
                             <h4 class="card-title">Product Name</h4>
-                            <input type="text" class="form-control" name="name" placeholder="Product name" value="<?php print $edit_name; ?>">
+                            <input type="text" class="form-control" name="name" placeholder="Product name" value="<?php print $edit_name; ?>" readonly>
                           </div>
                         </div>
                         <div class="col-sm-12 col-md-6">
                           <div class="mb-4">
                             <h4 class="card-title">Category</h4>
-                              <select name="category" class="form-control">
+                              <select name="category" class="form-control" readonly>
                                 <?php 
                                   $sql = "SELECT * FROM  `category`";
                                   $result = mysqli_query($conn, $sql);
@@ -437,7 +437,7 @@ if(isset($_POST['submit'])){
                         <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
                           <div class="">
                             <h4 class="card-title">Expiry Date</h4>
-                            <select name="expiry" class="form-control">
+                            <select name="expiry" class="form-control" readonly>
                               <option value="0" <?php if($edit_expiry == 0) echo 'selected'; ?>>No</option>
                               <option value="1" <?php if($edit_expiry == 1) echo 'selected'; ?>>Yes</option>
                             </select>
@@ -456,45 +456,25 @@ if(isset($_POST['submit'])){
                           <div class="numbers">
                               <div class="mt-4">
                               <h4 class="card-title">Cost Price</h4>
-                              <input type="number" name="orig_price" class="form-control" value="<?php print $edit_orig_price; ?>">
+                              <input type="number" name="orig_price" class="form-control" value="<?php print $edit_orig_price; ?>" readonly>
                               </div>
                           </div>
                         </div>
                         <div class="col-sm-12 col-md-6 ms-3 ms-sm-0" >
-                          <div class="numbers" style="display: none;">
-                              <div class="mt-4">
-                              <h4 class="card-title mt-2">VAT</h4>
-                              <select name="vat_price" class="form-control">
-                              <?php 
-                                    $sql = "SELECT * FROM `vat`";
-                                    $result = mysqli_query($conn, $sql);
-
-                                    $found = false;
-
-                                    while ($row = mysqli_fetch_assoc($result)) {
-                                        $selected = ($edit_vat_price == $row['vat']) ? "selected" : "";
-                                        if ($edit_vat_price == $row['vat']) {
-                                            $found = true;
-                                        }
-                                        echo "<option value='". $row['vat']. "' $selected>". $row['vat']. "%</option>";
-                                    }
-
-                                    if (!$found) {
-                                        $selected = ($edit_vat_price == 0) ? "selected" : "";
-                                        echo "<option value='0' $selected>0%</option>";
-                                    }
-                                ?>
-                            </select>
-                              </div>
-                          </div>
-                          <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
                           <div class="numbers">
                               <div class="mt-4">
-                              <h4 class="card-title mt-2">Selling Price</h4>
-                              <input type="number" name="price" class="form-control" value="<?php print $edit_price; ?>" >
+                              <h4 class="card-title mt-2">VAT</h4>
+                              <input type="number" name="vat_percent" class="form-control" value="<?php print $edit_vat_percent; ?>" readonly>
                               </div>
                           </div>
                         </div>
+                        <div class="col-sm-12 col-md-6 ms-3 ms-sm-0">
+                          <div class="numbers">
+                              <div class="mt-4">
+                              <h4 class="card-title mt-2">Selling Price</h4>
+                              <input type="number" name="price" class="form-control" value="<?php print $edit_price; ?>" readonly>
+                              </div>
+                          </div>
                         </div>
                       </div>
 
@@ -503,7 +483,7 @@ if(isset($_POST['submit'])){
                   <div class="numbers">
                       <div class="mt-4">
                       <h4 class="card-title mt-2">Reason</h4>
-                      <textarea name="reason" class="form-control" placeholder="Reason" ><?php print $view_reason; ?></textarea>
+                      <textarea name="reason" class="form-control" placeholder="Reason" readonly><?php print $view_reason; ?></textarea>
                     </div>
                       </div>
                   </div>

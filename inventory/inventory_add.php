@@ -38,6 +38,7 @@ if (isset($_POST['update'])) {
   $prod_price = (float)($_POST['prod_price'] ?? 0.00);
   $orig_price = (float)($_POST['orig_price'] ?? 0.00);
   $prod_category = (int)($_POST['prod_category'] ?? 0);
+  $vat_percent = (float)($_POST['vat_percent'] ?? 0.00);
   
   $prod_expiry = isset($_POST['prod_expiry']) ? (int)$_POST['prod_expiry'] : 0;
 
@@ -59,6 +60,7 @@ if (isset($_POST['update'])) {
           orig_price = ?, 
           prod_category = ?, 
           prod_expiry = ?, 
+          vat_percent = ?, 
           updated_at = NOW() 
           WHERE id = ?";
 
@@ -70,18 +72,19 @@ if (isset($_POST['update'])) {
   }
 
   $stmt->bind_param(
-    "sissiiidid",
-    $prod_name,
-    $sup_id,
-    $trans_id,
-    $del_date,
-    $prod_quantity,
-    $prod_price,
-    $orig_price,
-    $prod_category,
-    $prod_expiry,
-    $product_id
-);
+    "sissiiididi", // this format string must match the types below
+    $prod_name,      // string (s)
+    $sup_id,         // integer (i)
+    $trans_id,       // string? integer? (check this)
+    $del_date,       // string (s) for date
+    $prod_quantity,  // integer (i)
+    $prod_price,     // integer? or float?
+    $orig_price,     // double (d)
+    $prod_category,  // integer or string?
+    $prod_expiry,    // string (s) for date
+    $vat_percent,    // double (d)
+    $product_id      // integer (i)
+  );
 
   if ($stmt->execute()) {
       $_SESSION['error_message'] = "Product updated successfully!";
@@ -394,9 +397,8 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                         <input type="hidden" name="del_date" value="<?php echo $del_date; ?>">
 
                         <div class="mb-3">
-                            <label for="productSelect" class="form-label">Product:</label>
                             <select id="productSelect" name="product_id" class="form-select" required>
-                                <option value="">Select a product</option>
+                                <option value="">Browse Products</option>
                                 <?php while ($row = $products->fetch_assoc()): ?>
                                     <option value="<?php echo $row['id']; ?>">
                                         <?php echo htmlspecialchars($row['prod_name']); ?>
@@ -412,7 +414,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="prod_price" class="form-label">Selling Price:</label>
-                                <input type="number" step="0.01" class="form-control" id="prod_price" name="prod_price" >
+                                <input type="number" step="0.01" class="form-control" name="prod_price" >
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="orig_price" class="form-label">Cost Price:</label>
@@ -420,7 +422,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="prod_quantity" class="form-label">Quantity:</label>
-                                <input type="number" class="form-control" id="prod_quantity" name="prod_quantity" >
+                                <input type="number" class="form-control"  name="prod_quantity" >
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="prod_category" class="form-label">Category:</label>
@@ -434,6 +436,9 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                     ?>
                                 </select>
                             </div>
+
+                          
+
                             <div class="col-md-6 mb-3">
                                 <label for="prod_expiry" class="form-label">With Expiry</label>
                                 <div class="d-flex">
@@ -448,8 +453,28 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                                 </div>
                             </div>
                           
+
+                            <div class="col-sm-12 col-md-6 ms-3 ms-sm-0 mb-4">
+                              <div class="numbers"  >
+                                  <div class="">
+                                  <label for="vat_percent" class="form-label">VAT:</label>
+                                    <select name="vat_percent" class="form-select">
+                                        <option value="0">0%</option>
+                                        <?php 
+                                            $sql = "SELECT * FROM `vat`";
+                                            $result = mysqli_query($conn, $sql);
+                                            while ($row = mysqli_fetch_assoc($result)) {
+                                                echo "<option value='". $row['vat']. "'>". $row['vat']. "%</option>";
+                                            }
+                                        ?>
+                                    </select>
+                                  </div>
+                              </div>
+                            </div>
                             
                         </div>
+
+                        
 
                         <button type="submit" name="update" class="btn btn-primary">Add</button>
                         <a href="../delivery.php" class="btn btn-secondary">Back</a>
@@ -513,9 +538,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
             if (!productId) {
                 // Clear fields if no product is selected
                 document.getElementById('prod_name').value = '';
-                document.getElementById('prod_price').value = '';
                 document.getElementById('orig_price').value = '';
-                document.getElementById('prod_quantity').value = '';
                 document.getElementById('prod_category').value = '';
                 document.getElementById('expiry-yes').checked = false;
                 document.getElementById('expiry-no').checked = false;
@@ -532,9 +555,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
             .then(data => {
                 if (data.success) {
                     document.getElementById('prod_name').value = data.product.prod_name || '';
-                    document.getElementById('prod_price').value = data.product.prod_price || '';
                     document.getElementById('orig_price').value = data.product.orig_price || '';
-                    document.getElementById('prod_quantity').value = data.product.prod_quantity || '';
                     document.getElementById('prod_category').value = data.product.prod_category || '';
                     const expiry = data.product.prod_expiry != null ? parseInt(data.product.prod_expiry) : 0; 
                     console.log('prod_expiry:', expiry);

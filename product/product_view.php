@@ -356,7 +356,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
                     <h4 class="card-title mt-2">Vat (%)</h4>
                     <input type="number" class="form-control" value="<?php print $view_vat_price; ?>" readonly>
                   </div>
-                  <h4 class="card-title mt-2">Original Price</h4>
+                  <h4 class="card-title mt-2">Cost Price</h4>
                   <input type="number" class="form-control" value="<?php print $view_orig_price; ?>" readonly>
                   </div>
               </div>
